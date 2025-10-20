@@ -24,6 +24,8 @@ CREATE TABLE roles (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TYPE user_status AS ENUM ('active', 'inactive', 'banned');
+
 -- =====================================================
 -- Table: users
 -- =====================================================
@@ -33,7 +35,7 @@ CREATE TABLE users (
     last_name VARCHAR(100) NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
-    enabled BOOLEAN NOT NULL DEFAULT true,
+    status user_status NOT NULL DEFAULT 'active',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

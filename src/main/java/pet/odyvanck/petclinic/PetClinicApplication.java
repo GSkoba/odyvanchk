@@ -1,4 +1,4 @@
-package pet.odyvanck.pet.clinic;
+package pet.odyvanck.petclinic;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-FROM gradle:8.14.3-jdk21 AS builder
+FROM gradle:9.1.0-jdk25 AS builder
 
 WORKDIR /app
 
@@ -7,7 +7,7 @@ COPY . .
 RUN gradle bootJar --no-daemon
 
 
-FROM amazoncorretto:21-alpine3.22-jdk
+FROM amazoncorretto:25-alpine3.22-jdk
 
 WORKDIR /app
 
@@ -17,3 +17,4 @@ EXPOSE 8080
 
 # Run the app
 ENTRYPOINT ["java","-jar","app.jar"]
+

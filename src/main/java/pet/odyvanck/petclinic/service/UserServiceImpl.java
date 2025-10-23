@@ -2,6 +2,7 @@ package pet.odyvanck.petclinic.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pet.odyvanck.petclinic.dao.UserRepository;
 import pet.odyvanck.petclinic.domain.error.EntityAlreadyExistsException;
@@ -13,7 +14,7 @@ import pet.odyvanck.petclinic.domain.UserStatus;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final PasswordService passwordService;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     @Override
@@ -22,7 +23,7 @@ public class UserServiceImpl implements UserService {
             throw new EntityAlreadyExistsException("User", "email", user.getEmail());
         }
 
-        user.setPasswordHash(passwordService.hashPassword(password));
+        user.setPasswordHash(passwordEncoder.encode(password));
         user.setStatus(UserStatus.ACTIVE);
 
         return userRepository.save(user);

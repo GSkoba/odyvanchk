@@ -1,4 +1,7 @@
 package pet.odyvanck.petclinic.dao;
 
-public interface OwnerRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import pet.odyvanck.petclinic.domain.Owner;
+
+public interface OwnerRepository extends JpaRepository<Owner, Long> {
 }

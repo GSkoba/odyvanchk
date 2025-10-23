@@ -1,5 +1,6 @@
 package pet.odyvanck.petclinic.web.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,7 @@ public class OwnerController {
     private final OwnerMapper ownerMapper;
 
     @PostMapping
-    public ResponseEntity<OwnerCreationResponse> register(@RequestBody OwnerCreationRequest request) {
+    public ResponseEntity<OwnerCreationResponse> register(@Valid @RequestBody OwnerCreationRequest request) {
         User user = ownerMapper.toUser(request);
         Owner owner = ownerMapper.toOwner(request);
         var created = ownerService.register(owner, user, request.password());

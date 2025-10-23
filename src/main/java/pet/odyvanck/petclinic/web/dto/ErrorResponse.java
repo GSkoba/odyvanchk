@@ -9,15 +9,18 @@ import java.time.ZoneOffset;
 @Data
 public class ErrorResponse {
     private HttpStatus status;
-    private String error;
     private String message;
+    private Object details;
     private LocalDateTime timestamp = LocalDateTime.now(ZoneOffset.UTC);
 
-    public ErrorResponse(HttpStatus status, String error, String message) {
+    public ErrorResponse(HttpStatus status, String message) {
         this.status = status;
-        this.error = error;
         this.message = message;
     }
 
+    public ErrorResponse(HttpStatus status, String message, Object details) {
+        this(status, message);
+        this.details = details;
+    }
 
 }

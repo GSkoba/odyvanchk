@@ -18,7 +18,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleEntityAlreadyExists(EntityAlreadyExistsException ex) {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST,
-                EntityAlreadyExistsException.ERROR,
                 ex.getMessage()
         ) {
         };
@@ -34,8 +33,12 @@ public class GlobalExceptionHandler {
                         FieldError::getField,
                         FieldError::getDefaultMessage
                 ));
-
-        return ResponseEntity.badRequest().body(errors);
+        ErrorResponse errorResponse = new ErrorResponse(
+          HttpStatus.BAD_REQUEST,
+                "Validation errors in request data",
+                errors
+        );
+        return ResponseEntity.badRequest().body(errorResponse);
     }
 
 }

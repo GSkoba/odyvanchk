@@ -2,16 +2,14 @@ package pet.odyvanck.petclinic.web.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pet.odyvanck.petclinic.domain.Owner;
 import pet.odyvanck.petclinic.domain.User;
 import pet.odyvanck.petclinic.service.OwnerService;
-import pet.odyvanck.petclinic.web.dto.OwnerCreationRequest;
-import pet.odyvanck.petclinic.web.dto.OwnerCreationResponse;
+import pet.odyvanck.petclinic.web.dto.*;
 import pet.odyvanck.petclinic.web.mapper.OwnerMapper;
 
 import java.net.URI;
@@ -25,7 +23,7 @@ public class OwnerController {
     private final OwnerMapper ownerMapper;
 
     @PostMapping
-    public ResponseEntity<OwnerCreationResponse> register(@Valid @RequestBody OwnerCreationRequest request) {
+    public ResponseEntity<OwnerCreationResponse> create(@Valid @RequestBody OwnerCreationRequest request) {
         User user = ownerMapper.toUser(request);
         Owner owner = ownerMapper.toOwner(request);
         var created = ownerService.register(owner, user, request.password());
@@ -33,4 +31,18 @@ public class OwnerController {
                 URI.create("/api/v1/owners" + created.getId())
         ).body(ownerMapper.toDto(user, created));
     }
+
+    @GetMapping
+    public ResponseEntity<PageResponse<OwnerResponse>> getAll(
+            @Valid PaginationRequestParams paginationRequestParams,
+            OwnerRequestParams ownerRequestParams
+    ) {
+        PageRequest pageRequest = paginationRequestParams.buildPageRequest();
+        Page<Owner> ownerPage = ownerService.getAll(pageRequest, ownerRequestParams);
+        PageResponse<OwnerResponse> response = PageResponse.from(
+                ownerPage, ownerMapper::toResponse
+        );
+        return ResponseEntity.ok(response);
+    }
+
 }

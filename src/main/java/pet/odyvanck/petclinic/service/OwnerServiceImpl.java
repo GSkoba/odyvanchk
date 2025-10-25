@@ -10,7 +10,7 @@ import pet.odyvanck.petclinic.dao.OwnerRepository;
 import pet.odyvanck.petclinic.domain.Owner;
 import pet.odyvanck.petclinic.domain.User;
 import pet.odyvanck.petclinic.service.specification.OwnerSpecification;
-import pet.odyvanck.petclinic.web.dto.OwnerRequestParams;
+import pet.odyvanck.petclinic.web.dto.owner.OwnerRequestParams;
 
 @Service
 @RequiredArgsConstructor

@@ -21,11 +21,7 @@ public class Owner {
     @Column(nullable = false)
     private String phone;
 
-    @Column(nullable = false, unique = true)
-    private String email;
-
     private String address;
-    private String city;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now(ZoneOffset.UTC);

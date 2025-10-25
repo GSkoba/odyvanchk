@@ -10,6 +10,9 @@ import pet.odyvanck.petclinic.domain.Owner;
 import pet.odyvanck.petclinic.domain.User;
 import pet.odyvanck.petclinic.service.OwnerService;
 import pet.odyvanck.petclinic.web.dto.*;
+import pet.odyvanck.petclinic.web.dto.owner.OwnerCreationRequest;
+import pet.odyvanck.petclinic.web.dto.owner.OwnerRequestParams;
+import pet.odyvanck.petclinic.web.dto.owner.OwnerResponse;
 import pet.odyvanck.petclinic.web.mapper.OwnerMapper;
 
 import java.net.URI;
@@ -23,7 +26,7 @@ public class OwnerController {
     private final OwnerMapper ownerMapper;
 
     @PostMapping
-    public ResponseEntity<OwnerCreationResponse> create(@Valid @RequestBody OwnerCreationRequest request) {
+    public ResponseEntity<OwnerResponse> create(@Valid @RequestBody OwnerCreationRequest request) {
         User user = ownerMapper.toUser(request);
         Owner owner = ownerMapper.toOwner(request);
         var created = ownerService.register(owner, user, request.password());
@@ -40,7 +43,7 @@ public class OwnerController {
         PageRequest pageRequest = paginationRequestParams.buildPageRequest();
         Page<Owner> ownerPage = ownerService.getAll(pageRequest, ownerRequestParams);
         PageResponse<OwnerResponse> response = PageResponse.from(
-                ownerPage, ownerMapper::toResponse
+                ownerPage, ownerMapper::toDto
         );
         return ResponseEntity.ok(response);
     }

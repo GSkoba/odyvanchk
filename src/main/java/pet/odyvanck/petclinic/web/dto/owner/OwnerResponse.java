@@ -1,4 +1,4 @@
-package pet.odyvanck.petclinic.web.dto;
+package pet.odyvanck.petclinic.web.dto.owner;
 
 import java.time.LocalDateTime;
 
@@ -10,7 +10,7 @@ public record OwnerResponse (
     String phone,
     String email,
     String address,
-    String city,
-    LocalDateTime createdAt
+    LocalDateTime createdAt,
+    LocalDateTime updatedAt
 ) {
 }

@@ -1,4 +1,4 @@
-package pet.odyvanck.petclinic.web.dto;
+package pet.odyvanck.petclinic.web.dto.user;
 
 import pet.odyvanck.petclinic.domain.UserStatus;
 

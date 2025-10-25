@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import pet.odyvanck.petclinic.domain.Owner;
 import pet.odyvanck.petclinic.domain.User;
-import pet.odyvanck.petclinic.web.dto.OwnerRequestParams;
+import pet.odyvanck.petclinic.web.dto.owner.OwnerRequestParams;
 
 public interface OwnerService {
 

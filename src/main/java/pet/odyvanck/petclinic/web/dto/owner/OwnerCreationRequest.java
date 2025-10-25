@@ -1,4 +1,4 @@
-package pet.odyvanck.petclinic.web.dto;
+package pet.odyvanck.petclinic.web.dto.owner;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -32,9 +32,6 @@ public record OwnerCreationRequest(
 
         @NotBlank(message = "Address is required")
         @Size(max = 500, message = "Address must not exceed 500 characters")
-        String address,
-
-        @Size(max = 100, message = "City must not exceed 100 characters")
-        String city
+        String address
 ) {}
 

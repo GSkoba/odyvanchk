@@ -17,6 +17,9 @@ import pet.odyvanck.petclinic.web.mapper.OwnerMapper;
 
 import java.net.URI;
 
+/**
+ * Owner 
+ */
 @RestController
 @RequestMapping("/api/v1/owners")
 @RequiredArgsConstructor
@@ -25,6 +28,11 @@ public class OwnerController {
     private final OwnerService ownerService;
     private final OwnerMapper ownerMapper;
 
+    /**
+     * Registrates owner in system.
+     * @param request owner information.
+     * @return created owner entity.
+     */
     @PostMapping
     public ResponseEntity<OwnerResponse> create(@Valid @RequestBody OwnerCreationRequest request) {
         User user = ownerMapper.toUser(request);

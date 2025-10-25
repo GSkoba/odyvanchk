@@ -6,6 +6,9 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+/**
+ * Representes user as a person.
+ */
 @Entity
 @Table(name = "users")
 @Data

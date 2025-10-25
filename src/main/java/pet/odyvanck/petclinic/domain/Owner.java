@@ -6,6 +6,9 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+/**
+ * Represents user who can have pets.
+ */
 @Entity
 @Table(name = "owners")
 @Data

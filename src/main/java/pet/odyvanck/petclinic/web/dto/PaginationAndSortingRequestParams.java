@@ -7,8 +7,11 @@ import lombok.Setter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import java.util.Arrays;
+import java.util.Map;
+
 @Setter
-public class PaginationRequestParams {
+public class PaginationAndSortingRequestParams {
 
     @PositiveOrZero
     private Integer page;
@@ -38,15 +41,16 @@ public class PaginationRequestParams {
         return direction != null ? direction : DEFAULT_SORT_DIRECTION;
     }
 
-    public PageRequest buildPageRequest() {
-        if (sortBy != null && sortBy.length > 0) {
-            Sort sort = Sort.by(getDirection(), sortBy);
+    public PageRequest buildPageRequest(Map<String, String> transformations) {
+        if (getSortBy() != null && getSortBy().length > 0) {
+            Sort sort = Sort.by(getDirection(), Arrays.stream(getSortBy())
+                    .map(sortField ->
+                            transformations.getOrDefault(sortField, sortField))
+                    .toArray(String[]::new)
+            );
             return PageRequest.of(getPage(), getSize(), sort);
         }
-
         return PageRequest.of(getPage(), getSize());
     }
 
 }
-
-

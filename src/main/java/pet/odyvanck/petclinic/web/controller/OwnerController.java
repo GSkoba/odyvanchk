@@ -13,13 +13,12 @@ import pet.odyvanck.petclinic.web.dto.*;
 import pet.odyvanck.petclinic.web.dto.owner.OwnerCreationRequest;
 import pet.odyvanck.petclinic.web.dto.owner.OwnerRequestParams;
 import pet.odyvanck.petclinic.web.dto.owner.OwnerResponse;
+import pet.odyvanck.petclinic.web.dto.owner.OwnerPaginationAndSorting;
 import pet.odyvanck.petclinic.web.mapper.OwnerMapper;
 
 import java.net.URI;
+import java.util.Map;
 
-/**
- * Owner 
- */
 @RestController
 @RequestMapping("/api/v1/owners")
 @RequiredArgsConstructor
@@ -27,6 +26,7 @@ public class OwnerController {
 
     private final OwnerService ownerService;
     private final OwnerMapper ownerMapper;
+    private final static Map<String, String> SORT_TRANSFORM = Map.of("email","user.email");
 
     /**
      * Registrates owner in system.
@@ -43,12 +43,18 @@ public class OwnerController {
         ).body(ownerMapper.toDto(user, created));
     }
 
+    /**
+     * Gets all owners by request params.
+     * @param paginationAndSorting contains page and sorting info.
+     * @param ownerRequestParams filtering params
+     * @return all suitable owners.
+     */
     @GetMapping
     public ResponseEntity<PageResponse<OwnerResponse>> getAll(
-            @Valid PaginationRequestParams paginationRequestParams,
+            @Valid OwnerPaginationAndSorting paginationAndSorting,
             OwnerRequestParams ownerRequestParams
     ) {
-        PageRequest pageRequest = paginationRequestParams.buildPageRequest();
+        PageRequest pageRequest = paginationAndSorting.buildPageRequest(SORT_TRANSFORM);
         Page<Owner> ownerPage = ownerService.getAll(pageRequest, ownerRequestParams);
         PageResponse<OwnerResponse> response = PageResponse.from(
                 ownerPage, ownerMapper::toDto

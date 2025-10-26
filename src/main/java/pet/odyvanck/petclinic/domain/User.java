@@ -39,9 +39,6 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now(ZoneOffset.UTC);
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Owner owner;
-
     @PreUpdate
     public void setLastUpdate() {
         this.updatedAt = LocalDateTime.now(ZoneOffset.UTC);

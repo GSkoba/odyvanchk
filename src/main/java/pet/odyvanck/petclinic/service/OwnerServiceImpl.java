@@ -1,11 +1,11 @@
 package pet.odyvanck.petclinic.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pet.odyvanck.petclinic.dao.OwnerRepository;
 import pet.odyvanck.petclinic.domain.Owner;
 import pet.odyvanck.petclinic.domain.User;
@@ -27,6 +27,7 @@ public class OwnerServiceImpl implements OwnerService {
         return ownerRepository.save(owner);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<Owner> getAll(PageRequest pageRequest, OwnerRequestParams filter) {
         var spec = Specification.<Owner>unrestricted().and(OwnerSpecification.hasEmail(filter.getEmail()))

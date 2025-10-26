@@ -1,6 +1,5 @@
 package pet.odyvanck.petclinic.service;
 
-import jakarta.transaction.Transactional;
 import pet.odyvanck.petclinic.domain.User;
 
 public interface UserService {
@@ -11,6 +10,5 @@ public interface UserService {
      * @param password raw password.
      * @return created user.
      */
-    @Transactional
     User register(User user, String password);
 }

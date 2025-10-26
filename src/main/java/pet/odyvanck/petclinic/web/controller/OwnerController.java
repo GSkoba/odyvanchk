@@ -39,7 +39,7 @@ public class OwnerController {
         Owner owner = ownerMapper.toOwner(request);
         var created = ownerService.register(owner, user, request.password());
         return ResponseEntity.created(
-                URI.create("/api/v1/owners" + created.getId())
+                URI.create("/api/v1/owners/" + created.getId())
         ).body(ownerMapper.toDto(user, created));
     }
 

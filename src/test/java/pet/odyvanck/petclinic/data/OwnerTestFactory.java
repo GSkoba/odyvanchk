@@ -106,10 +106,43 @@ public final class OwnerTestFactory {
         return owners;
     }
 
+    public static List<Owner> createOwnerListWithoutIdAndUser(int count) {
+        List<Owner> owners = new ArrayList<>();
+        for (int i = 1; i <= count; i++) {
+            Owner o = createOwnerForListWithoutIdAndUser(i);
+            o.setPhone("+100000000" + i);
+            o.setAddress("Street " + i);
+            owners.add(o);
+        }
+        return owners;
+    }
+
+    public static List<User> createUserListWithoutId(int count) {
+        List<User> users = new ArrayList<>();
+        for (int i = 1; i <= count; i++) {
+            User u = new User();
+            u.setEmail("example" + i +"@gmail.com");
+            u.setFirstName("John" + i);
+            u.setLastName("Doe" + i);
+            u.setPasswordHash("StrongPassHash" + i);
+            users.add(u);
+        }
+        return users;
+    }
+
     private static Owner createOwnerForList(long i, long userId) {
         Owner owner = new Owner();
         owner.setId(i);
         owner.setUser(createUserForList(userId));
+        owner.setPhone("+100000000" + i);
+        owner.setAddress("Street " + i);
+        LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+        LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC).plusDays(2);
+        return owner;
+    }
+
+    private static Owner createOwnerForListWithoutIdAndUser(long i) {
+        Owner owner = new Owner();
         owner.setPhone("+100000000" + i);
         owner.setAddress("Street " + i);
         LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);

@@ -2,6 +2,8 @@ package pet.odyvanck.petclinic.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -29,7 +31,7 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(nullable = false)
     private UserStatus status = UserStatus.ACTIVE;
 

@@ -1,4 +1,4 @@
-package pet.odyvanck.petclinic.controller;
+package pet.odyvanck.petclinic.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,8 +14,6 @@ import pet.odyvanck.petclinic.domain.Owner;
 import pet.odyvanck.petclinic.domain.User;
 import pet.odyvanck.petclinic.domain.error.EntityAlreadyExistsException;
 import pet.odyvanck.petclinic.service.OwnerService;
-import pet.odyvanck.petclinic.web.controller.GlobalExceptionHandler;
-import pet.odyvanck.petclinic.web.controller.OwnerController;
 import pet.odyvanck.petclinic.web.dto.owner.*;
 import pet.odyvanck.petclinic.web.mapper.OwnerMapper;
 

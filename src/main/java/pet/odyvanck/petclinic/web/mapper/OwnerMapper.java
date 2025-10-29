@@ -1,0 +1,31 @@
+package pet.odyvanck.petclinic.web.mapper;
+
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import pet.odyvanck.petclinic.domain.Owner;
+import pet.odyvanck.petclinic.domain.User;
+import pet.odyvanck.petclinic.web.dto.owner.OwnerCreationRequest;
+import pet.odyvanck.petclinic.web.dto.owner.OwnerResponse;
+import pet.odyvanck.petclinic.web.dto.owner.OwnerUpdateRequest;
+
+import java.util.List;
+
+@Mapper(componentModel = "spring")
+public interface OwnerMapper {
+
+    User toUser(OwnerCreationRequest request);
+
+    Owner toOwner(OwnerCreationRequest request);
+    
+    @Mapping(source = "user.lastName", target = "lastName")
+    @Mapping(source = "user.firstName", target = "firstName")
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "user.email", target = "email")
+    OwnerResponse toDto(Owner owner);
+
+    List<OwnerResponse> toDto(List<Owner> owner);
+
+    void updateOwnerFromRequest(OwnerUpdateRequest request, @MappingTarget Owner owner);
+
+}

@@ -24,12 +24,14 @@ import pet.odyvanck.petclinic.domain.error.EntityAlreadyExistsException;
 import pet.odyvanck.petclinic.service.OwnerService;
 import pet.odyvanck.petclinic.service.UserService;
 import pet.odyvanck.petclinic.web.dto.owner.OwnerRequestParams;
+import pet.odyvanck.petclinic.web.dto.owner.OwnerUpdateRequest;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 
 
 @Testcontainers
@@ -164,5 +166,58 @@ class OwnerServiceImplIT {
 
         assertThat(page.getTotalElements()).isEqualTo(1);
         assertThat(page.getContent().getFirst().getUser().getFirstName()).isEqualTo(firstName);
+    }
+
+    @Test
+    @DisplayName("Getting By Id returns existing Owner when ID is valid")
+    void getByIdSuccessfully() {
+        Owner found = ownerService.getById(preloadedOwners.get(1).getId());
+        assertThat(found).isNotNull();
+        assertThat(found.getUser().getFirstName()).isEqualTo(preloadedOwners.get(1).getUser().getFirstName());
+    }
+
+    @Test
+    @DisplayName("Getting By Id throws exception when Owner not found")
+    void getByIdThrowsWhenNotFound() {
+        assertThatThrownBy(() -> ownerService.getById(9999L))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Owner not found");
+    }
+
+
+    @Test
+    @DisplayName("Update modifies Owner fields and persist them")
+    void updateSuccessfully() {
+        OwnerUpdateRequest updateRequest = OwnerTestFactory.createOwnerUpdateRequest();
+
+        Owner updated = ownerService.update(preloadedOwners.getFirst().getId(), updateRequest);
+
+        assertThat(updated.getUser().getFirstName()).isEqualTo(updateRequest.firstName());
+        assertThat(updated.getUser().getLastName()).isEqualTo(updateRequest.lastName());
+        assertThat(updated.getPhone()).isEqualTo(updateRequest.phone());
+        assertThat(updated.getAddress()).isEqualTo(updateRequest.address());
+        assertThat(updated.getUpdatedAt()).isNotNull();
+
+        Owner fromDb = ownerRepository.findById(preloadedOwners.getFirst().getId()).orElseThrow();
+        assertThat(fromDb.getUser().getFirstName()).isEqualTo(updateRequest.firstName());
+        assertThat(fromDb.getUser().getLastName()).isEqualTo(updateRequest.lastName());
+        assertThat(fromDb.getPhone()).isEqualTo(updateRequest.phone());
+        assertThat(fromDb.getAddress()).isEqualTo(updateRequest.address());
+        assertThat(fromDb.getUpdatedAt()).isNotNull();
+    }
+
+
+    @Test
+    @DisplayName("Deletion by id removes Owner when it exists")
+    void deleteByIdSuccessfully() {
+        ownerService.deleteById(preloadedOwners.getFirst().getId());
+        assertThat(ownerRepository.existsById(preloadedOwners.getFirst().getId())).isFalse();
+    }
+
+    @Test
+    @DisplayName("Deletion by id should not throw when Owner does not exist")
+    void deleteByIdNotThrowWhenNotExists() {
+        assertThatCode(() -> ownerService.deleteById(9999L))
+                .doesNotThrowAnyException();
     }
 }

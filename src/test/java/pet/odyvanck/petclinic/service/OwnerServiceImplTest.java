@@ -11,10 +11,15 @@ import pet.odyvanck.petclinic.data.OwnerTestFactory;
 import pet.odyvanck.petclinic.domain.Owner;
 import pet.odyvanck.petclinic.domain.User;
 import pet.odyvanck.petclinic.web.dto.owner.OwnerRequestParams;
+import pet.odyvanck.petclinic.web.dto.owner.OwnerUpdateRequest;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.times;
@@ -104,6 +109,70 @@ class OwnerServiceImplTest {
 
         assertThat(result.getContent()).isEmpty();
         verify(ownerRepository).findAll(any(Specification.class), eq(pageRequest));
+    }
+
+    @Test
+    @DisplayName("Getting owner by id")
+    void getByIdSuccessfully() {
+        when(ownerRepository.findById(1L)).thenReturn(Optional.of(OwnerTestFactory.createOwner(1L, 2L)));
+
+        Owner found = ownerService.getById(1L);
+
+        assertThat(found).isNotNull();
+        assertThat(found.getId()).isEqualTo(1L);
+        verify(ownerRepository).findById(1L);
+    }
+
+    @Test
+    @DisplayName("Throwing exception when owner not found")
+    void getByIdThrowsExceptionNotFound() {
+        when(ownerRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> ownerService.getById(1L))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Owner not found with id: 1");
+
+        verify(ownerRepository).findById(1L);
+    }
+
+    @Test
+    @DisplayName("Update of owner entity")
+    void updateSuccessfully() {
+        OwnerUpdateRequest updateRequest = OwnerTestFactory.createOwnerUpdateRequest();
+
+        when(ownerRepository.findById(1L)).thenReturn(Optional.of(OwnerTestFactory.createOwner(1L, 2L)));
+        when(ownerRepository.save(any(Owner.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Owner updated = ownerService.update(1L, updateRequest);
+
+        assertThat(updated.getPhone()).isEqualTo(updateRequest.phone());
+        assertThat(updated.getAddress()).isEqualTo(updateRequest.address());
+        assertThat(updated.getUser().getFirstName()).isEqualTo(updateRequest.firstName());
+        assertThat(updated.getUser().getLastName()).isEqualTo(updateRequest.lastName());
+        assertThat(updated.getUpdatedAt()).isNotNull().isBeforeOrEqualTo(LocalDateTime.now(ZoneOffset.UTC));
+
+        verify(ownerRepository).save(any(Owner.class));
+    }
+
+
+    @Test
+    @DisplayName("Deletion by id")
+    void deleteByIdSuccessfully() {
+        when(ownerRepository.existsById(1L)).thenReturn(true);
+
+        ownerService.deleteById(1L);
+
+        verify(ownerRepository).deleteById(1L);
+    }
+
+    @Test
+    @DisplayName("Deletion when owner does not exist")
+    void deleteByIdOwnerDoesNotExist() {
+        when(ownerRepository.existsById(1L)).thenReturn(false);
+
+        ownerService.deleteById(1L);
+
+        verify(ownerRepository, never()).deleteById(anyLong());
     }
 
 }

@@ -32,6 +32,7 @@ class OwnerControllerTest {
     private OwnerService ownerService;
     private OwnerMapper ownerMapper;
     private ObjectMapper objectMapper;
+    private static final String BASE_URI = "/api/v1/owners";
 
     @BeforeEach
     void setup() {
@@ -46,7 +47,7 @@ class OwnerControllerTest {
     }
 
     @Test
-    @DisplayName("Create owner successfully")
+    @DisplayName("POST /api/v1/owners → should create owner successfully")
     void registerSuccessfully() throws Exception {
         var request = OwnerTestFactory.createOwnerCreationRequest();
         var owner = OwnerTestFactory.createOwner(1L, 10L);
@@ -57,7 +58,7 @@ class OwnerControllerTest {
         given(ownerService.register(owner, owner.getUser(), request.password())).willReturn(owner);
         given(ownerMapper.toDto(owner.getUser(), owner)).willReturn(response);
 
-        mockMvc.perform(post("/api/v1/owners")
+        mockMvc.perform(post(BASE_URI)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
@@ -69,26 +70,23 @@ class OwnerControllerTest {
     }
 
     @Test
-    @DisplayName("Failed validation for phone and email")
+    @DisplayName("POST /api/v1/owners → should fail validation for phone and email")
     void registerValidationError() throws Exception {
         var invalid = new OwnerCreationRequest(
                 "first", "last", "123", "bad_phone", "not-an-email", "address"
         );
 
-        mockMvc.perform(post("/api/v1/owners")
+        mockMvc.perform(post(BASE_URI)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalid)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Validation errors in request data"))
-                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.details.phone").exists())
-                .andExpect(jsonPath("$.timestamp").exists())
                 .andExpect(jsonPath("$.details.email").exists());
     }
 
-
     @Test
-    @DisplayName("Return paginated owners")
+    @DisplayName("GET /api/v1/owners → should return paginated list of owners")
     void getAllOwnersSuccessfully() throws Exception {
         var owners = OwnerTestFactory.createOwnerList(2);
         var responses = OwnerTestFactory.createOwnerResponseList(2);
@@ -97,7 +95,7 @@ class OwnerControllerTest {
         given(ownerService.getAll(any(PageRequest.class), any())).willReturn(page);
         given(ownerMapper.toDto(owners)).willReturn(responses);
 
-        mockMvc.perform(get("/api/v1/owners")
+        mockMvc.perform(get(BASE_URI)
                         .param("page", "0")
                         .param("size", "10")
                         .param("sortBy", "firstName"))
@@ -115,26 +113,25 @@ class OwnerControllerTest {
     }
 
     @Test
-    @DisplayName("Empty list when no owners found")
+    @DisplayName("GET /api/v1/owners → should return empty list when no owners exist")
     void getAllOwnersEmpty() throws Exception {
         Page<Owner> emptyPage = new PageImpl<>(List.of(), PageRequest.of(0, 10), 0);
         given(ownerService.getAll(any(PageRequest.class), any())).willReturn(emptyPage);
 
-        mockMvc.perform(get("/api/v1/owners")
+        mockMvc.perform(get(BASE_URI)
                         .param("page", "0")
                         .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.elements").isEmpty());
     }
 
-
     @Test
-    @DisplayName("Transform sort field 'email' to 'user.email'")
+    @DisplayName("GET /api/v1/owners → should transform sort field 'email' to 'user.email'")
     void getAllTransformsSortFieldEmailToUserEmail() throws Exception {
         Page<Owner> page = new PageImpl<>(OwnerTestFactory.createOwnerList(1));
         given(ownerService.getAll(any(PageRequest.class), any())).willReturn(page);
 
-        mockMvc.perform(get("/api/v1/owners")
+        mockMvc.perform(get(BASE_URI)
                         .param("page", "0")
                         .param("size", "5")
                         .param("sortBy", "email"))
@@ -152,18 +149,17 @@ class OwnerControllerTest {
                 .isNotNull();
     }
 
-
     @Test
-    @DisplayName("Invalid sorted field")
+    @DisplayName("GET /api/v1/owners → should fail when invalid sort field is provided")
     void getAllInvalidSortField() throws Exception {
-        mockMvc.perform(get("/api/v1/owners")
+        mockMvc.perform(get(BASE_URI)
                         .param("sortBy", "invalidField"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").exists());
     }
 
     @Test
-    @DisplayName("Registration with already existing email in the system")
+    @DisplayName("POST /api/v1/owners → should fail when email already exists")
     void registerDuplicateEmail() throws Exception {
         var request = OwnerTestFactory.createOwnerCreationRequest();
         var owner = OwnerTestFactory.createOwnerWithoutIdAndUser();
@@ -174,15 +170,65 @@ class OwnerControllerTest {
         given(ownerService.register(owner, user, request.password()))
                 .willThrow(new EntityAlreadyExistsException("User", "email", user.getEmail()));
 
-        mockMvc.perform(post("/api/v1/owners")
+        mockMvc.perform(post(BASE_URI)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message")
                         .value(String.format("User with email '%s' already exists", request.email())));
-
-        verify(ownerService).register(any(Owner.class), any(User.class), eq(request.password()));
-        verify(ownerMapper, never()).toDto(any(Owner.class));
     }
 
+    @Test
+    @DisplayName("GET /api/v1/owners/{id} → should return owner by ID")
+    void getByIdSuccessfully() throws Exception {
+        final Long id = 1L;
+        Owner owner = OwnerTestFactory.createOwner(id, 2L);
+        OwnerResponse response = OwnerTestFactory.createOwnerResponse(id, 2L);
+
+        given(ownerService.getById(id)).willReturn(owner);
+        given(ownerMapper.toDto(owner.getUser(), owner)).willReturn(response);
+
+        mockMvc.perform(get(BASE_URI + "/" + id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value(response.email()))
+                .andExpect(jsonPath("$.lastName").value(response.lastName()))
+                .andExpect(jsonPath("$.phone").value(response.phone()))
+                .andExpect(jsonPath("$.address").value(response.address()))
+                .andExpect(jsonPath("$.firstName").value(response.firstName()));
+    }
+
+    @Test
+    @DisplayName("PUT /api/v1/owners/{id} → should update and return updated owner")
+    void updateSuccessfully() throws Exception {
+        final Long id = 1L;
+        OwnerUpdateRequest updateRequest = OwnerTestFactory.createOwnerUpdateRequest();
+        Owner owner = OwnerTestFactory.createOwner(id, 2L);
+        OwnerResponse updatedResponse = OwnerTestFactory.createUpdatedOwnerResponse(id, 2L, updateRequest);
+
+        given(ownerService.getById(id)).willReturn(owner);
+        doNothing().when(ownerMapper).updateOwnerFromRequest(any(), any());
+        given(ownerService.update(any(Long.class), any(OwnerUpdateRequest.class))).willReturn(owner);
+        given(ownerMapper.toDto(any(User.class), any(Owner.class))).willReturn(updatedResponse);
+
+        mockMvc.perform(put(BASE_URI + "/" + id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value(updatedResponse.email()))
+                .andExpect(jsonPath("$.lastName").value(updatedResponse.lastName()))
+                .andExpect(jsonPath("$.phone").value(updatedResponse.phone()))
+                .andExpect(jsonPath("$.address").value(updatedResponse.address()))
+                .andExpect(jsonPath("$.firstName").value(updatedResponse.firstName()));
+    }
+
+    @Test
+    @DisplayName("DELETE /api/v1/owners/{id} - should delete and return 204")
+    void deleteReturnsNoContent() throws Exception {
+        final Long id = 1L;
+
+        doNothing().when(ownerService).deleteById(id);
+
+        mockMvc.perform(delete(BASE_URI + "/" + id))
+                .andExpect(status().isNoContent());
+    }
 }

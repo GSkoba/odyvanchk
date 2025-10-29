@@ -5,6 +5,7 @@ import pet.odyvanck.petclinic.domain.Owner;
 import pet.odyvanck.petclinic.domain.User;
 import pet.odyvanck.petclinic.web.dto.owner.OwnerCreationRequest;
 import pet.odyvanck.petclinic.web.dto.owner.OwnerResponse;
+import pet.odyvanck.petclinic.web.dto.owner.OwnerUpdateRequest;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -80,6 +81,27 @@ public final class OwnerTestFactory {
         return user;
     }
 
+    public static OwnerUpdateRequest createOwnerUpdateRequest() {
+        return new OwnerUpdateRequest(
+             "updatedFirstName",
+             "updatedLastName",
+             "+9876533",
+             "updated address"
+        );
+    }
+    public static OwnerResponse createUpdatedOwnerResponse(Long id, Long userId, OwnerUpdateRequest req) {
+        return new OwnerResponse(
+                id,
+                userId,
+                req.firstName(),
+                req.lastName(),
+                req.phone(),
+                "john@example.com",
+                req.address(),
+                LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC).plusDays(2),
+                LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC)
+        );
+    }
 
     public static OwnerResponse createOwnerResponse(Long id, Long userId) {
         return new OwnerResponse(

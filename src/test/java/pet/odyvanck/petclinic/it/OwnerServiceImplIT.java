@@ -17,6 +17,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pet.odyvanck.petclinic.dao.OwnerRepository;
 import pet.odyvanck.petclinic.data.OwnerTestFactory;
+import pet.odyvanck.petclinic.data.UserTestFactory;
 import pet.odyvanck.petclinic.domain.Owner;
 import pet.odyvanck.petclinic.domain.User;
 import pet.odyvanck.petclinic.domain.UserStatus;
@@ -69,7 +70,7 @@ class OwnerServiceImplIT {
 
         preloadedOwners = new ArrayList<>();
         List<Owner> owners = OwnerTestFactory.createOwnerListWithoutIdAndUser(count);
-        List<User> users = OwnerTestFactory.createUserListWithoutId(count);
+        List<User> users = UserTestFactory.createUserListWithoutId(count);
         for (int i = 0; i < count; i++) {
             var saved = ownerService.register(owners.get(i), users.get(i), "password" + i);
             preloadedOwners.add(saved);
@@ -84,7 +85,7 @@ class OwnerServiceImplIT {
     @Test
     @DisplayName("Owner registration successfully")
     void registerSuccessfully() {
-        User user = OwnerTestFactory.createUserWithoutId();
+        User user = UserTestFactory.createUserWithoutId();
         Owner owner = OwnerTestFactory.createOwnerWithoutIdAndUser();
 
         Owner savedOwner = ownerService.register(owner, user, "password123");
@@ -99,13 +100,13 @@ class OwnerServiceImplIT {
     @Test
     @DisplayName("Registration with already existing email")
     void registerDuplicatesEmail() {
-        User user = OwnerTestFactory.createUserWithoutId();
+        User user = UserTestFactory.createUserWithoutId();
         Owner owner = OwnerTestFactory.createOwnerWithoutIdAndUser();
 
         Owner savedOwner = ownerService.register(owner, user, "password123");
 
         Owner duplicate = OwnerTestFactory.createOwnerWithoutIdAndUser();
-        User duplicateUser = OwnerTestFactory.createUserWithoutId();
+        User duplicateUser = UserTestFactory.createUserWithoutId();
 
         assertThatThrownBy(() -> ownerService.register(duplicate, duplicateUser, "anotherPass"))
                 .isInstanceOf(EntityAlreadyExistsException.class)
@@ -179,9 +180,10 @@ class OwnerServiceImplIT {
     @Test
     @DisplayName("Getting By Id throws exception when Owner not found")
     void getByIdThrowsWhenNotFound() {
-        assertThatThrownBy(() -> ownerService.getById(9999L))
+        var id = 9999L;
+        assertThatThrownBy(() -> ownerService.getById(id))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Owner not found");
+                .hasMessageContaining("Owner with id '"+ id + "' not found");
     }
 
 

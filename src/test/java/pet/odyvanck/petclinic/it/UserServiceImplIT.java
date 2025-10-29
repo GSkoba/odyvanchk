@@ -15,7 +15,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pet.odyvanck.petclinic.dao.UserRepository;
-import pet.odyvanck.petclinic.data.OwnerTestFactory;
+import pet.odyvanck.petclinic.data.UserTestFactory;
 import pet.odyvanck.petclinic.domain.User;
 import pet.odyvanck.petclinic.domain.UserStatus;
 import pet.odyvanck.petclinic.domain.error.EntityAlreadyExistsException;
@@ -50,7 +50,7 @@ class UserServiceImplIT {
 
     @BeforeEach
     void setUp() {
-        user = OwnerTestFactory.createUserWithoutId();
+        user = UserTestFactory.createUserWithoutId();
     }
 
     @AfterAll

@@ -10,8 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import pet.odyvanck.petclinic.data.OwnerTestFactory;
+import pet.odyvanck.petclinic.data.UserTestFactory;
 import pet.odyvanck.petclinic.domain.Owner;
-import pet.odyvanck.petclinic.domain.User;
 import pet.odyvanck.petclinic.domain.error.EntityAlreadyExistsException;
 import pet.odyvanck.petclinic.service.OwnerService;
 import pet.odyvanck.petclinic.web.dto.owner.*;
@@ -56,7 +56,7 @@ class OwnerControllerTest {
         given(ownerMapper.toUser(request)).willReturn(owner.getUser());
         given(ownerMapper.toOwner(request)).willReturn(owner);
         given(ownerService.register(owner, owner.getUser(), request.password())).willReturn(owner);
-        given(ownerMapper.toDto(owner.getUser(), owner)).willReturn(response);
+        given(ownerMapper.toDto(owner)).willReturn(response);
 
         mockMvc.perform(post(BASE_URI)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -163,7 +163,7 @@ class OwnerControllerTest {
     void registerDuplicateEmail() throws Exception {
         var request = OwnerTestFactory.createOwnerCreationRequest();
         var owner = OwnerTestFactory.createOwnerWithoutIdAndUser();
-        var user = OwnerTestFactory.createUserWithoutId();
+        var user = UserTestFactory.createUserWithoutId();
 
         given(ownerMapper.toUser(request)).willReturn(user);
         given(ownerMapper.toOwner(request)).willReturn(owner);
@@ -186,7 +186,7 @@ class OwnerControllerTest {
         OwnerResponse response = OwnerTestFactory.createOwnerResponse(id, 2L);
 
         given(ownerService.getById(id)).willReturn(owner);
-        given(ownerMapper.toDto(owner.getUser(), owner)).willReturn(response);
+        given(ownerMapper.toDto(owner)).willReturn(response);
 
         mockMvc.perform(get(BASE_URI + "/" + id))
                 .andExpect(status().isOk())
@@ -208,7 +208,7 @@ class OwnerControllerTest {
         given(ownerService.getById(id)).willReturn(owner);
         doNothing().when(ownerMapper).updateOwnerFromRequest(any(), any());
         given(ownerService.update(any(Long.class), any(OwnerUpdateRequest.class))).willReturn(owner);
-        given(ownerMapper.toDto(any(User.class), any(Owner.class))).willReturn(updatedResponse);
+        given(ownerMapper.toDto(any(Owner.class))).willReturn(updatedResponse);
 
         mockMvc.perform(put(BASE_URI + "/" + id)
                         .contentType(MediaType.APPLICATION_JSON)

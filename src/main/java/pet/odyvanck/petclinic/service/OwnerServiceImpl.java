@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pet.odyvanck.petclinic.dao.OwnerRepository;
 import pet.odyvanck.petclinic.domain.Owner;
 import pet.odyvanck.petclinic.domain.User;
+import pet.odyvanck.petclinic.domain.error.EntityNotFoundException;
 import pet.odyvanck.petclinic.service.specification.OwnerSpecification;
 import pet.odyvanck.petclinic.web.dto.owner.OwnerRequestParams;
 import pet.odyvanck.petclinic.web.dto.owner.OwnerUpdateRequest;
@@ -43,7 +44,7 @@ public class OwnerServiceImpl implements OwnerService {
     @Transactional(readOnly = true)
     public Owner getById(Long id) {
         return ownerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Owner not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Owner", "id", id.toString()));
     }
 
     @Transactional

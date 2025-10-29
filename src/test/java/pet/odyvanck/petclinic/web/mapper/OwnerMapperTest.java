@@ -53,35 +53,6 @@ class OwnerMapperTest {
         assertThat(user.getLastName()).isEqualTo("Smith");
     }
 
-    @Test
-    void toDtoMapsOwnerAndUser() {
-        User user = new User();
-        user.setId(1L);
-        user.setEmail("user@example.com");
-        user.setFirstName("Alice");
-        user.setLastName("Wonder");
-
-        Owner owner = new Owner();
-        owner.setId(2L);
-        owner.setPhone("+111222333");
-        owner.setAddress("789 Road");
-        owner.setUser(user);
-        owner.setCreatedAt(LocalDateTime.now());
-        owner.setUpdatedAt(LocalDateTime.now());
-
-        OwnerResponse dto = mapper.toDto(user, owner);
-
-        assertThat(dto).isNotNull();
-        assertThat(dto.id()).isEqualTo(owner.getId());
-        assertThat(dto.userId()).isEqualTo(user.getId());
-        assertThat(dto.firstName()).isEqualTo(user.getFirstName());
-        assertThat(dto.lastName()).isEqualTo(user.getLastName());
-        assertThat(dto.phone()).isEqualTo(owner.getPhone());
-        assertThat(dto.email()).isEqualTo(user.getEmail());
-        assertThat(dto.address()).isEqualTo(owner.getAddress());
-        assertThat(dto.createdAt()).isEqualTo(owner.getCreatedAt());
-        assertThat(dto.updatedAt()).isEqualTo(owner.getUpdatedAt());
-    }
 
     @Test
     void toDto() {

@@ -1,5 +1,6 @@
 package pet.odyvanck.petclinic.web.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 
@@ -10,6 +11,8 @@ import java.time.ZoneOffset;
 public class ErrorResponse {
     private HttpStatus status;
     private String message;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Object details;
     private LocalDateTime timestamp = LocalDateTime.now(ZoneOffset.UTC);
 

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pet.odyvanck.petclinic.dao.UserRepository;
-import pet.odyvanck.petclinic.data.OwnerTestFactory;
+import pet.odyvanck.petclinic.data.UserTestFactory;
 import pet.odyvanck.petclinic.domain.User;
 import pet.odyvanck.petclinic.domain.UserStatus;
 import pet.odyvanck.petclinic.domain.error.EntityAlreadyExistsException;
@@ -37,7 +37,7 @@ class UserServiceImplTest {
     @Test
     @DisplayName("Register user with encoded password, ACTIVE status")
     void registerSuccessfully() {
-        User user = OwnerTestFactory.createUserWithoutId();
+        User user = UserTestFactory.createUserWithoutId();
         String rawPassword = "strongPsw";
         String hashedPassword = "superHashedPsw";
 
@@ -56,7 +56,7 @@ class UserServiceImplTest {
     @Test
     @DisplayName("EntityAlreadyExistsException when email already exists")
     void registerDuplicateEmail() {
-        User user = OwnerTestFactory.createUserWithoutId();
+        User user = UserTestFactory.createUserWithoutId();
         String rawPassword = "psw";
 
         given(userRepository.findByEmail(user.getEmail())).willReturn(Optional.of(user));

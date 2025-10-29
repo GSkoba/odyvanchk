@@ -42,20 +42,10 @@ public final class OwnerTestFactory {
         );
     }
 
-    public static User createUser(Long id) {
-        User user = new User();
-        user.setId(id);
-        user.setEmail("john@example.com");
-        user.setFirstName("John");
-        user.setLastName("Doe");
-        user.setPasswordHash("StrongPassHash");
-        return user;
-    }
-
     public static Owner createOwner(Long id, Long userId) {
         Owner owner = new Owner();
         owner.setId(id);
-        owner.setUser(createUser(userId));
+        owner.setUser(UserTestFactory.createUser(userId));
         owner.setPhone("+1234567890");
         owner.setAddress("123 Main St");
         owner.setCreatedAt(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC));
@@ -70,15 +60,6 @@ public final class OwnerTestFactory {
         owner.setCreatedAt(LocalDateTime.now().minusDays(1));
         owner.setUpdatedAt(LocalDateTime.now());
         return owner;
-    }
-
-    public static User createUserWithoutId() {
-        User user = new User();
-        user.setEmail("john@example.com");
-        user.setFirstName("John");
-        user.setLastName("Doe");
-        user.setPasswordHash("StrongPassHash");
-        return user;
     }
 
     public static OwnerUpdateRequest createOwnerUpdateRequest() {
@@ -139,18 +120,7 @@ public final class OwnerTestFactory {
         return owners;
     }
 
-    public static List<User> createUserListWithoutId(int count) {
-        List<User> users = new ArrayList<>();
-        for (int i = 1; i <= count; i++) {
-            User u = new User();
-            u.setEmail("example" + i +"@gmail.com");
-            u.setFirstName("John" + i);
-            u.setLastName("Doe" + i);
-            u.setPasswordHash("StrongPassHash" + i);
-            users.add(u);
-        }
-        return users;
-    }
+
 
     private static Owner createOwnerForList(long i, long userId) {
         Owner owner = new Owner();

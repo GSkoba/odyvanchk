@@ -37,7 +37,7 @@ public class OwnerController {
         var created = ownerService.register(owner, user, request.password());
         return ResponseEntity.created(
                 URI.create("/api/v1/owners/" + created.getId())
-        ).body(ownerMapper.toDto(user, created));
+        ).body(ownerMapper.toDto(created));
     }
 
     /**
@@ -65,8 +65,7 @@ public class OwnerController {
     @GetMapping("/{id}")
     public ResponseEntity<OwnerResponse> getById(@PathVariable Long id) {
         Owner owner = ownerService.getById(id);
-        User user = owner.getUser();
-        return ResponseEntity.ok(ownerMapper.toDto(user, owner));
+        return ResponseEntity.ok(ownerMapper.toDto(owner));
     }
 
     /**
@@ -78,7 +77,7 @@ public class OwnerController {
             @Valid @RequestBody OwnerUpdateRequest request
     ) {
         Owner updated = ownerService.update(id, request);
-        return ResponseEntity.ok(ownerMapper.toDto(updated.getUser(), updated));
+        return ResponseEntity.ok(ownerMapper.toDto(updated));
     }
 
     /**

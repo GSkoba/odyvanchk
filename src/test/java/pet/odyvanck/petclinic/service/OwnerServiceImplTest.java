@@ -8,6 +8,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import pet.odyvanck.petclinic.dao.OwnerRepository;
 import pet.odyvanck.petclinic.data.OwnerTestFactory;
+import pet.odyvanck.petclinic.data.UserTestFactory;
 import pet.odyvanck.petclinic.domain.Owner;
 import pet.odyvanck.petclinic.domain.User;
 import pet.odyvanck.petclinic.web.dto.owner.OwnerRequestParams;
@@ -44,7 +45,7 @@ class OwnerServiceImplTest {
     @DisplayName("Register owner successfully")
     void registerSuccessfully() {
         Owner owner = OwnerTestFactory.createOwnerWithoutIdAndUser();
-        User user = OwnerTestFactory.createUserWithoutId();
+        User user = UserTestFactory.createUserWithoutId();
         Owner savedOwner = OwnerTestFactory.createOwner(1L, 11L);
         User savedUser = savedOwner.getUser();
 
@@ -63,8 +64,8 @@ class OwnerServiceImplTest {
     @DisplayName("Set the saved user into owner before saving")
     void registerSetsUserBeforeSave() {
         Owner owner = OwnerTestFactory.createOwnerWithoutIdAndUser();
-        User user = OwnerTestFactory.createUserWithoutId();
-        User savedUser = OwnerTestFactory.createUser(2L);
+        User user = UserTestFactory.createUserWithoutId();
+        User savedUser = UserTestFactory.createUser(2L);
 
         given(userService.register(user, "pwd")).willReturn(savedUser);
         given(ownerRepository.save(owner)).willReturn(owner);
@@ -114,25 +115,28 @@ class OwnerServiceImplTest {
     @Test
     @DisplayName("Getting owner by id")
     void getByIdSuccessfully() {
-        when(ownerRepository.findById(1L)).thenReturn(Optional.of(OwnerTestFactory.createOwner(1L, 2L)));
+        var id = 1L;
+        var userId = 2L;
+        when(ownerRepository.findById(id)).thenReturn(Optional.of(OwnerTestFactory.createOwner(id, userId)));
 
-        Owner found = ownerService.getById(1L);
+        Owner found = ownerService.getById(id);
 
         assertThat(found).isNotNull();
-        assertThat(found.getId()).isEqualTo(1L);
-        verify(ownerRepository).findById(1L);
+        assertThat(found.getId()).isEqualTo(id);
+        verify(ownerRepository).findById(id);
     }
 
     @Test
     @DisplayName("Throwing exception when owner not found")
     void getByIdThrowsExceptionNotFound() {
-        when(ownerRepository.findById(1L)).thenReturn(Optional.empty());
+        var id = 1L;
+        when(ownerRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> ownerService.getById(1L))
+        assertThatThrownBy(() -> ownerService.getById(id))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Owner not found with id: 1");
+                .hasMessageContaining("Owner with id '"+ id +"' not found");
 
-        verify(ownerRepository).findById(1L);
+        verify(ownerRepository).findById(id);
     }
 
     @Test

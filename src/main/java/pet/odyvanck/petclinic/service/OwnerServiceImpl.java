@@ -11,6 +11,10 @@ import pet.odyvanck.petclinic.domain.Owner;
 import pet.odyvanck.petclinic.domain.User;
 import pet.odyvanck.petclinic.service.specification.OwnerSpecification;
 import pet.odyvanck.petclinic.web.dto.owner.OwnerRequestParams;
+import pet.odyvanck.petclinic.web.dto.owner.OwnerUpdateRequest;
+
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 @Service
 @RequiredArgsConstructor
@@ -35,4 +39,29 @@ public class OwnerServiceImpl implements OwnerService {
                 .and(OwnerSpecification.hasFirstName(filter.getFirstName()));
         return ownerRepository.findAll(spec, pageRequest);
     }
+
+    @Transactional(readOnly = true)
+    public Owner getById(Long id) {
+        return ownerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Owner not found with id: " + id));
+    }
+
+    @Transactional
+    public Owner update(Long id, OwnerUpdateRequest fieldsToUpdate) {
+        Owner owner = getById(id);
+        owner.setPhone(fieldsToUpdate.phone());
+        owner.setAddress(fieldsToUpdate.address());
+        owner.getUser().setFirstName(fieldsToUpdate.firstName());
+        owner.getUser().setLastName(fieldsToUpdate.lastName());
+        owner.setUpdatedAt(LocalDateTime.now(ZoneOffset.UTC));
+        return ownerRepository.save(owner);
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        if (ownerRepository.existsById(id)) {
+            ownerRepository.deleteById(id);
+        }
+    }
+
 }

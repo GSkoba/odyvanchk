@@ -2,10 +2,12 @@ package pet.odyvanck.petclinic.web.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import pet.odyvanck.petclinic.domain.Owner;
 import pet.odyvanck.petclinic.domain.User;
 import pet.odyvanck.petclinic.web.dto.owner.OwnerCreationRequest;
 import pet.odyvanck.petclinic.web.dto.owner.OwnerResponse;
+import pet.odyvanck.petclinic.web.dto.owner.OwnerUpdateRequest;
 
 import java.util.List;
 
@@ -29,5 +31,7 @@ public interface OwnerMapper {
     OwnerResponse toDto(Owner owner);
 
     List<OwnerResponse> toDto(List<Owner> owner);
+
+    void updateOwnerFromRequest(OwnerUpdateRequest request, @MappingTarget Owner owner);
 
 }

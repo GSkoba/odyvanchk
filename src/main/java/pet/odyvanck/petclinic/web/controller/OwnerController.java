@@ -10,10 +10,7 @@ import pet.odyvanck.petclinic.domain.Owner;
 import pet.odyvanck.petclinic.domain.User;
 import pet.odyvanck.petclinic.service.OwnerService;
 import pet.odyvanck.petclinic.web.dto.*;
-import pet.odyvanck.petclinic.web.dto.owner.OwnerCreationRequest;
-import pet.odyvanck.petclinic.web.dto.owner.OwnerRequestParams;
-import pet.odyvanck.petclinic.web.dto.owner.OwnerResponse;
-import pet.odyvanck.petclinic.web.dto.owner.OwnerPaginationAndSorting;
+import pet.odyvanck.petclinic.web.dto.owner.*;
 import pet.odyvanck.petclinic.web.mapper.OwnerMapper;
 
 import java.net.URI;
@@ -60,6 +57,37 @@ public class OwnerController {
                 ownerPage, ownerMapper::toDto
         );
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Read a single owner by ID.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<OwnerResponse> getById(@PathVariable Long id) {
+        Owner owner = ownerService.getById(id);
+        User user = owner.getUser();
+        return ResponseEntity.ok(ownerMapper.toDto(user, owner));
+    }
+
+    /**
+     * Update an existing owner.
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<OwnerResponse> update(
+            @PathVariable Long id,
+            @Valid @RequestBody OwnerUpdateRequest request
+    ) {
+        Owner updated = ownerService.update(id, request);
+        return ResponseEntity.ok(ownerMapper.toDto(updated.getUser(), updated));
+    }
+
+    /**
+     * Delete an owner by ID.
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        ownerService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -19,9 +19,9 @@ public class UserTestFactory {
     public static User createUser(Long id) {
         User user = new User();
         user.setId(id);
-        user.setEmail("john@example.com");
-        user.setFirstName("John");
-        user.setLastName("Doe");
+        user.setEmail("john" + id + "@example.com");
+        user.setFirstName("John" + id);
+        user.setLastName("Doe" + id);
         user.setPasswordHash("StrongPassHash");
         return user;
     }

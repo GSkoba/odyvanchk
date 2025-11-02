@@ -2,6 +2,7 @@ package pet.odyvanck.petclinic.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 /**
- * Representes user as a person.
+ * Represents user as a person.
  */
 @Entity
 @Table(name = "users")
@@ -36,9 +37,11 @@ public class User {
     private UserStatus status = UserStatus.ACTIVE;
 
     @Column(name = "created_at", updatable = false)
+    @EqualsAndHashCode.Exclude
     private LocalDateTime createdAt = LocalDateTime.now(ZoneOffset.UTC);
 
     @Column(name = "updated_at")
+    @EqualsAndHashCode.Exclude
     private LocalDateTime updatedAt = LocalDateTime.now(ZoneOffset.UTC);
 
     @PreUpdate

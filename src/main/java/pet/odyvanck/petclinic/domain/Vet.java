@@ -16,6 +16,9 @@ public class Vet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Version
+    private Integer version;
+
     @OneToOne
     @JoinColumn(name = "user_id", unique = true, nullable = false)
     private User user;

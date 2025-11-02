@@ -1,0 +1,2 @@
+ALTER TABLE vets
+DROP COLUMN email;

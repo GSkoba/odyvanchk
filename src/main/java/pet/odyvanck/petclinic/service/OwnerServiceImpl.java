@@ -35,9 +35,9 @@ public class OwnerServiceImpl implements OwnerService {
     @Transactional(readOnly = true)
     @Override
     public Page<Owner> getAll(PageRequest pageRequest, OwnerRequestParams filter) {
-        var spec = Specification.<Owner>unrestricted().and(OwnerSpecification.hasEmail(filter.getEmail()))
-                .and(OwnerSpecification.hasPhone(filter.getPhone()))
-                .and(OwnerSpecification.hasFirstName(filter.getFirstName()));
+        var spec = Specification.<Owner>unrestricted().and(OwnerSpecification.hasEmail(filter.email()))
+                .and(OwnerSpecification.hasPhone(filter.phone()))
+                .and(OwnerSpecification.hasFirstName(filter.firstName()));
         return ownerRepository.findAll(spec, pageRequest);
     }
 

@@ -20,8 +20,8 @@ public class GlobalExceptionHandler {
      * @param ex
      * @return
      */
-    @ExceptionHandler(EntityAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleEntityAlreadyExists(EntityAlreadyExistsException ex) {
+    @ExceptionHandler({EntityAlreadyExistsException.class, MissingServletRequestParameterException.class})
+    public ResponseEntity<ErrorResponse> handleBadRequestErrors(Exception ex) {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST,
                 ex.getMessage()

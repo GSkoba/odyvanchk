@@ -2,9 +2,10 @@ package pet.odyvanck.petclinic.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 /**
  * Represents user who can have pets.
@@ -26,14 +27,12 @@ public class Owner {
 
     private String address;
 
+    @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now(ZoneOffset.UTC);
+    private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt = LocalDateTime.now(ZoneOffset.UTC);
+    private LocalDateTime updatedAt;
 
-    @PreUpdate
-    public void setLastUpdate() {
-        this.updatedAt = LocalDateTime.now(ZoneOffset.UTC);
-    }
 }

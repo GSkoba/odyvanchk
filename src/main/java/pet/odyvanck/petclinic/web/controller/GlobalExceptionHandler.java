@@ -4,10 +4,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pet.odyvanck.petclinic.domain.error.EntityAlreadyExistsException;
 import pet.odyvanck.petclinic.domain.error.EntityNotFoundException;
+import pet.odyvanck.petclinic.domain.error.InvalidStateException;
 import pet.odyvanck.petclinic.web.dto.ErrorResponse;
 
 import java.util.stream.Collectors;
@@ -16,11 +18,11 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     /**
-     * Handles entity already exists exception.
+     * Handles bad request exception with single message.
      * @param ex
      * @return
      */
-    @ExceptionHandler({EntityAlreadyExistsException.class, MissingServletRequestParameterException.class})
+    @ExceptionHandler({EntityAlreadyExistsException.class, MissingServletRequestParameterException.class, InvalidStateException.class})
     public ResponseEntity<ErrorResponse> handleBadRequestErrors(Exception ex) {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST,
@@ -45,7 +47,7 @@ public class GlobalExceptionHandler {
                         FieldError::getDefaultMessage
                 ));
         ErrorResponse errorResponse = new ErrorResponse(
-          HttpStatus.BAD_REQUEST,
+                HttpStatus.BAD_REQUEST,
                 "Validation errors in request data",
                 errors
         );
@@ -69,6 +71,7 @@ public class GlobalExceptionHandler {
 
     /**
      * Handles internal server errors.
+     *
      * @param ex
      * @return
      */

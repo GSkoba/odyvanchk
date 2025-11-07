@@ -7,3 +7,9 @@ databaseChangeLog:
       file: db/changelog/db.changelog-003-fix-user-status.sql
   - include:
       file: db/changelog/db.changelog-004-fix-vet.sql
+  - include:
+      file: db/changelog/db.changelog-005-link-visits-to-vets.sql
+  - include:
+      file: db/changelog/db.changelog-006-visits-delete-date-and-constraint.sql
+  - include:
+      file: db/changelog/db.changelog-007-visits-idempotency.sql

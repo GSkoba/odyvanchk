@@ -46,13 +46,16 @@ public class PetServiceImpl implements PetService {
         Objects.requireNonNull(request, "request must be not null");
 
         Pet pet = getById(id);
-        pet.setName(request.name());
-        pet.setColor(request.color());
-        pet.setBirthDate(request.birthDate());
-        pet.setWeight(request.weight());
-        pet.setBreed(request.breed());
-        pet.setType(request.type());
-        return petRepository.save(pet);
+
+        Pet updated = pet.toBuilder()
+                .name(request.name())
+                .color(request.color())
+                .birthDate(request.birthDate())
+                .weight(request.weight())
+                .breed(request.breed())
+                .type(request.type())
+                .build();
+        return petRepository.save(updated);
     }
 
     @Transactional(readOnly = true)

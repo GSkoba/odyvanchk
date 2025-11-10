@@ -1,6 +1,7 @@
 package pet.odyvanck.petclinic.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "pets")
 @Data
+@Builder(toBuilder = true)
 public class Pet {
 
     @Id

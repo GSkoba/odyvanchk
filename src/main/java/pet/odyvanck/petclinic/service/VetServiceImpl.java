@@ -11,8 +11,7 @@ import pet.odyvanck.petclinic.domain.Vet;
 import pet.odyvanck.petclinic.domain.error.EntityNotFoundException;
 import pet.odyvanck.petclinic.web.dto.vet.VetUpdateRequest;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -42,11 +41,15 @@ public class VetServiceImpl implements VetService {
         Objects.requireNonNull(request, "request must be not null");
 
         Vet vet = getById(id);
-        vet.getUser().setFirstName(request.firstName());
-        vet.getUser().setLastName(request.lastName());
-        vet.setPhone(request.phone());
-        vet.setUpdatedAt(LocalDateTime.now(ZoneOffset.UTC));
-        return vetRepository.save(vet);
+
+        Vet updatedVet = vet.toBuilder()
+                .phone(request.phone())
+                .user(vet.getUser().toBuilder()
+                        .firstName(request.firstName())
+                        .lastName(request.lastName())
+                        .build())
+                .build();
+        return vetRepository.save(updatedVet);
     }
 
 

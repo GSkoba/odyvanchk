@@ -15,6 +15,7 @@ import pet.odyvanck.petclinic.web.mapper.OwnerMapper;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/owners")
@@ -63,7 +64,7 @@ public class OwnerController {
      * Read a single owner by ID.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<OwnerResponse> getById(@PathVariable Long id) {
+    public ResponseEntity<OwnerResponse> getById(@PathVariable UUID id) {
         Owner owner = ownerService.getById(id);
         return ResponseEntity.ok(ownerMapper.toDto(owner));
     }
@@ -73,7 +74,7 @@ public class OwnerController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<OwnerResponse> update(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @Valid @RequestBody OwnerUpdateRequest request
     ) {
         Owner updated = ownerService.update(id, request);
@@ -84,7 +85,7 @@ public class OwnerController {
      * Delete an owner by ID.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         ownerService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

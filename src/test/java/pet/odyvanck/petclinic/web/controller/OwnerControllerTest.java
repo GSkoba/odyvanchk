@@ -18,6 +18,7 @@ import pet.odyvanck.petclinic.web.dto.owner.*;
 import pet.odyvanck.petclinic.web.mapper.OwnerMapper;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
@@ -49,9 +50,11 @@ class OwnerControllerTest {
     @Test
     @DisplayName("POST /api/v1/owners → should create owner successfully")
     void registerSuccessfully() throws Exception {
+        final UUID id = UUID.randomUUID();
+        final UUID userId = UUID.randomUUID();
         var request = OwnerTestFactory.createOwnerCreationRequest();
-        var owner = OwnerTestFactory.createOwner(1L, 10L);
-        var response = OwnerTestFactory.createOwnerResponse(1L, 10L);
+        var owner = OwnerTestFactory.createOwner(id, userId);
+        var response = OwnerTestFactory.createOwnerResponse(id, userId);
 
         given(ownerMapper.toUser(request)).willReturn(owner.getUser());
         given(ownerMapper.toOwner(request)).willReturn(owner);
@@ -62,7 +65,7 @@ class OwnerControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "/api/v1/owners/1"))
+                .andExpect(header().string("Location", "/api/v1/owners/" + id))
                 .andExpect(jsonPath("$.firstName").value("John"))
                 .andExpect(jsonPath("$.email").value("john@example.com"));
 
@@ -181,9 +184,10 @@ class OwnerControllerTest {
     @Test
     @DisplayName("GET /api/v1/owners/{id} → should return owner by ID")
     void getByIdSuccessfully() throws Exception {
-        final Long id = 1L;
-        Owner owner = OwnerTestFactory.createOwner(id, 2L);
-        OwnerResponse response = OwnerTestFactory.createOwnerResponse(id, 2L);
+        final UUID id = UUID.randomUUID();
+        final UUID userId = UUID.randomUUID();
+        Owner owner = OwnerTestFactory.createOwner(id, userId);
+        OwnerResponse response = OwnerTestFactory.createOwnerResponse(id, userId);
 
         given(ownerService.getById(id)).willReturn(owner);
         given(ownerMapper.toDto(owner)).willReturn(response);
@@ -200,14 +204,15 @@ class OwnerControllerTest {
     @Test
     @DisplayName("PUT /api/v1/owners/{id} → should update and return updated owner")
     void updateSuccessfully() throws Exception {
-        final Long id = 1L;
+        final UUID id = UUID.randomUUID();
+        final UUID userId = UUID.randomUUID();
         OwnerUpdateRequest updateRequest = OwnerTestFactory.createOwnerUpdateRequest();
-        Owner owner = OwnerTestFactory.createOwner(id, 2L);
-        OwnerResponse updatedResponse = OwnerTestFactory.createUpdatedOwnerResponse(id, 2L, updateRequest);
+        Owner owner = OwnerTestFactory.createOwner(id, userId);
+        OwnerResponse updatedResponse = OwnerTestFactory.createUpdatedOwnerResponse(id, userId, updateRequest);
 
         given(ownerService.getById(id)).willReturn(owner);
         doNothing().when(ownerMapper).updateOwnerFromRequest(any(), any());
-        given(ownerService.update(any(Long.class), any(OwnerUpdateRequest.class))).willReturn(owner);
+        given(ownerService.update(any(UUID.class), any(OwnerUpdateRequest.class))).willReturn(owner);
         given(ownerMapper.toDto(any(Owner.class))).willReturn(updatedResponse);
 
         mockMvc.perform(put(BASE_URI + "/" + id)
@@ -224,7 +229,7 @@ class OwnerControllerTest {
     @Test
     @DisplayName("DELETE /api/v1/owners/{id} - should delete and return 204")
     void deleteReturnsNoContent() throws Exception {
-        final Long id = 1L;
+        final UUID id = UUID.randomUUID();
 
         doNothing().when(ownerService).deleteById(id);
 

@@ -16,6 +16,7 @@ import pet.odyvanck.petclinic.web.dto.owner.OwnerUpdateRequest;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -42,13 +43,13 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Transactional(readOnly = true)
-    public Owner getById(Long id) {
+    public Owner getById(UUID id) {
         return ownerRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Owner", "id", id.toString()));
     }
 
     @Transactional
-    public Owner update(Long id, OwnerUpdateRequest fieldsToUpdate) {
+    public Owner update(UUID id, OwnerUpdateRequest fieldsToUpdate) {
         Owner owner = getById(id);
         owner.setPhone(fieldsToUpdate.phone());
         owner.setAddress(fieldsToUpdate.address());
@@ -59,7 +60,7 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Transactional
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         if (ownerRepository.existsById(id)) {
             ownerRepository.deleteById(id);
         }

@@ -9,6 +9,7 @@ import pet.odyvanck.petclinic.web.dto.owner.OwnerResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,13 +58,13 @@ class OwnerMapperTest {
     @Test
     void toDto() {
         User user = new User();
-        user.setId(10L);
+        user.setId(UUID.randomUUID());
         user.setFirstName("John");
         user.setLastName("Doe");
         user.setEmail("john@example.com");
 
         Owner owner = new Owner();
-        owner.setId(100L);
+        owner.setId(UUID.randomUUID());
         owner.setUser(user);
         owner.setPhone("+123456789");
         owner.setAddress("123 Street");
@@ -86,13 +87,13 @@ class OwnerMapperTest {
     @Test
     void toDtoList() {
         User user1 = new User();
-        user1.setId(1L);
+        user1.setId(UUID.randomUUID());
         user1.setFirstName("Alice");
         user1.setLastName("Smith");
         user1.setEmail("alice@example.com");
 
         Owner owner1 = new Owner();
-        owner1.setId(101L);
+        owner1.setId(UUID.randomUUID());
         owner1.setUser(user1);
         owner1.setPhone("+111111111");
         owner1.setAddress("Street 1");
@@ -100,13 +101,13 @@ class OwnerMapperTest {
         owner1.setUpdatedAt(LocalDateTime.now());
 
         User user2 = new User();
-        user2.setId(2L);
+        user2.setId(UUID.randomUUID());
         user2.setFirstName("Bob");
         user2.setLastName("Johnson");
         user2.setEmail("bob@example.com");
 
         Owner owner2 = new Owner();
-        owner2.setId(102L);
+        owner2.setId(UUID.randomUUID());
         owner2.setUser(user2);
         owner2.setPhone("+222222222");
         owner2.setAddress("Street 2");

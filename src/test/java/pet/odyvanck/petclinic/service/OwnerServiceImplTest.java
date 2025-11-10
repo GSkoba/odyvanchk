@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -46,7 +47,9 @@ class OwnerServiceImplTest {
     void registerSuccessfully() {
         Owner owner = OwnerTestFactory.createOwnerWithoutIdAndUser();
         User user = UserTestFactory.createUserWithoutId();
-        Owner savedOwner = OwnerTestFactory.createOwner(1L, 11L);
+        final UUID id = UUID.randomUUID();
+        final UUID userId = UUID.randomUUID();
+        Owner savedOwner = OwnerTestFactory.createOwner(id, userId);
         User savedUser = savedOwner.getUser();
 
         given(userService.register(user, "StrongPass123")).willReturn(savedUser);
@@ -65,7 +68,8 @@ class OwnerServiceImplTest {
     void registerSetsUserBeforeSave() {
         Owner owner = OwnerTestFactory.createOwnerWithoutIdAndUser();
         User user = UserTestFactory.createUserWithoutId();
-        User savedUser = UserTestFactory.createUser(2L);
+        final UUID userId = UUID.randomUUID();
+        User savedUser = UserTestFactory.createUser(userId);
 
         given(userService.register(user, "pwd")).willReturn(savedUser);
         given(ownerRepository.save(owner)).willReturn(owner);
@@ -78,10 +82,7 @@ class OwnerServiceImplTest {
     @Test
     @DisplayName("Call repository with correct Specification and return page")
     void getAllSuccessfully() {
-        OwnerRequestParams params = new OwnerRequestParams();
-        params.setEmail("john@example.com");
-        params.setPhone("+1234567890");
-        params.setFirstName("John");
+        OwnerRequestParams params = new OwnerRequestParams("john@example.com", "+1234567890", "John");
 
         PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("firstName"));
         List<Owner> owners = OwnerTestFactory.createOwnerList(2);
@@ -100,7 +101,7 @@ class OwnerServiceImplTest {
     @Test
     @DisplayName("Support empty filters")
     void getAllEmptyFilters() {
-        OwnerRequestParams params = new OwnerRequestParams();
+        OwnerRequestParams params = new OwnerRequestParams(null, null, null);
         PageRequest pageRequest = PageRequest.of(0, 5);
         Page<Owner> emptyPage = new PageImpl<>(List.of(), pageRequest, 0);
 
@@ -115,8 +116,9 @@ class OwnerServiceImplTest {
     @Test
     @DisplayName("Getting owner by id")
     void getByIdSuccessfully() {
-        var id = 1L;
-        var userId = 2L;
+        final UUID id = UUID.randomUUID();
+        final UUID userId = UUID.randomUUID();
+
         when(ownerRepository.findById(id)).thenReturn(Optional.of(OwnerTestFactory.createOwner(id, userId)));
 
         Owner found = ownerService.getById(id);
@@ -129,12 +131,12 @@ class OwnerServiceImplTest {
     @Test
     @DisplayName("Throwing exception when owner not found")
     void getByIdThrowsExceptionNotFound() {
-        var id = 1L;
+        final UUID id = UUID.randomUUID();
         when(ownerRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> ownerService.getById(id))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Owner with id '"+ id +"' not found");
+                .hasMessageContaining("Owner with id '" + id + "' not found");
 
         verify(ownerRepository).findById(id);
     }
@@ -143,11 +145,12 @@ class OwnerServiceImplTest {
     @DisplayName("Update of owner entity")
     void updateSuccessfully() {
         OwnerUpdateRequest updateRequest = OwnerTestFactory.createOwnerUpdateRequest();
-
-        when(ownerRepository.findById(1L)).thenReturn(Optional.of(OwnerTestFactory.createOwner(1L, 2L)));
+        final UUID id = UUID.randomUUID();
+        final UUID userId = UUID.randomUUID();
+        when(ownerRepository.findById(id)).thenReturn(Optional.of(OwnerTestFactory.createOwner(id, userId)));
         when(ownerRepository.save(any(Owner.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Owner updated = ownerService.update(1L, updateRequest);
+        Owner updated = ownerService.update(id, updateRequest);
 
         assertThat(updated.getPhone()).isEqualTo(updateRequest.phone());
         assertThat(updated.getAddress()).isEqualTo(updateRequest.address());
@@ -162,21 +165,23 @@ class OwnerServiceImplTest {
     @Test
     @DisplayName("Deletion by id")
     void deleteByIdSuccessfully() {
-        when(ownerRepository.existsById(1L)).thenReturn(true);
+        final UUID id = UUID.randomUUID();
+        when(ownerRepository.existsById(id)).thenReturn(true);
 
-        ownerService.deleteById(1L);
+        ownerService.deleteById(id);
 
-        verify(ownerRepository).deleteById(1L);
+        verify(ownerRepository).deleteById(id);
     }
 
     @Test
     @DisplayName("Deletion when owner does not exist")
     void deleteByIdOwnerDoesNotExist() {
-        when(ownerRepository.existsById(1L)).thenReturn(false);
+        final UUID id = UUID.randomUUID();
+        when(ownerRepository.existsById(id)).thenReturn(false);
 
-        ownerService.deleteById(1L);
+        ownerService.deleteById(id);
 
-        verify(ownerRepository, never()).deleteById(anyLong());
+        verify(ownerRepository, never()).deleteById(any(UUID.class));
     }
 
 }

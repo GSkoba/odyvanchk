@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Factory class providing ready-to-use test objects for Owner-related tests.
@@ -42,7 +43,7 @@ public final class OwnerTestFactory {
         );
     }
 
-    public static Owner createOwner(Long id, Long userId) {
+    public static Owner createOwner(UUID id, UUID userId) {
         Owner owner = new Owner();
         owner.setId(id);
         owner.setUser(UserTestFactory.createUser(userId));
@@ -70,7 +71,7 @@ public final class OwnerTestFactory {
              "updated address"
         );
     }
-    public static OwnerResponse createUpdatedOwnerResponse(Long id, Long userId, OwnerUpdateRequest req) {
+    public static OwnerResponse createUpdatedOwnerResponse(UUID id, UUID userId, OwnerUpdateRequest req) {
         return new OwnerResponse(
                 id,
                 userId,
@@ -84,7 +85,7 @@ public final class OwnerTestFactory {
         );
     }
 
-    public static OwnerResponse createOwnerResponse(Long id, Long userId) {
+    public static OwnerResponse createOwnerResponse(UUID id, UUID userId) {
         return new OwnerResponse(
                 id,
                 userId,
@@ -101,7 +102,10 @@ public final class OwnerTestFactory {
     public static List<Owner> createOwnerList(int count) {
         List<Owner> owners = new ArrayList<>();
         for (int i = 1; i <= count; i++) {
-            Owner o = createOwnerForList((long) i, (long) i + 1);
+            Owner o = createOwnerForList(
+                    UserTestFactory.generateForLong(i),
+                    UserTestFactory.generateForLong(i + 1)
+            );
             o.setPhone("+100000000" + i);
             o.setAddress("Street " + i);
             owners.add(o);
@@ -122,14 +126,14 @@ public final class OwnerTestFactory {
 
 
 
-    private static Owner createOwnerForList(long i, long userId) {
+    private static Owner createOwnerForList(UUID i, UUID userId) {
         Owner owner = new Owner();
         owner.setId(i);
         owner.setUser(createUserForList(userId));
         owner.setPhone("+100000000" + i);
         owner.setAddress("Street " + i);
-        LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
-        LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC).plusDays(2);
+        owner.setCreatedAt(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC));
+        owner.setUpdatedAt(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC).plusDays(2));
         return owner;
     }
 
@@ -137,12 +141,12 @@ public final class OwnerTestFactory {
         Owner owner = new Owner();
         owner.setPhone("+100000000" + i);
         owner.setAddress("Street " + i);
-        LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
-        LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC).plusDays(2);
+        owner.setCreatedAt(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC));
+        owner.setUpdatedAt(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC).plusDays(2));
         return owner;
     }
 
-    private static User createUserForList(long i) {
+    private static User createUserForList(UUID i) {
         User user = new User();
         user.setId(i);
         user.setEmail("owner" + i + "@example.com");
@@ -156,8 +160,8 @@ public final class OwnerTestFactory {
         List<OwnerResponse> list = new ArrayList<>();
         for (int i = 1; i <= count; i++) {
             list.add(new OwnerResponse(
-                    (long) i,
-                    (long) (1 + i),
+                    UserTestFactory.generateForLong(i),
+                    UserTestFactory.generateForLong(i + 1),
                     "Owner" + i,
                     "Last" + i,
                     "+100000000" + i,

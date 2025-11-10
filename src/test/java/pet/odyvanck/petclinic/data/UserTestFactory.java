@@ -4,6 +4,7 @@ import pet.odyvanck.petclinic.domain.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class UserTestFactory {
 
@@ -16,7 +17,7 @@ public class UserTestFactory {
         return user;
     }
 
-    public static User createUser(Long id) {
+    public static User createUser(UUID id) {
         User user = new User();
         user.setId(id);
         user.setEmail("john@example.com");
@@ -38,4 +39,9 @@ public class UserTestFactory {
         }
         return users;
     }
+
+    public static UUID generateForLong(long i) {
+        return new UUID(0L, i);
+    }
+
 }

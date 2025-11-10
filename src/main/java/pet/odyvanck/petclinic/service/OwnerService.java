@@ -1,12 +1,15 @@
 package pet.odyvanck.petclinic.service;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import pet.odyvanck.petclinic.domain.Owner;
 import pet.odyvanck.petclinic.domain.User;
 import pet.odyvanck.petclinic.web.dto.owner.OwnerRequestParams;
 import pet.odyvanck.petclinic.web.dto.owner.OwnerUpdateRequest;
+
+import java.util.UUID;
 
 public interface OwnerService {
 
@@ -18,7 +21,7 @@ public interface OwnerService {
      * @param password raw password.
      * @return created owner.
      */
-    Owner register(Owner owner, User user, String password);
+    Owner register(@NotNull Owner owner, @NotNull User user, @NotNull String password);
 
     /**
      * Gets information about owners according to request.
@@ -27,7 +30,7 @@ public interface OwnerService {
      * @param filter      filter params for owner.
      * @return owner list according to params.
      */
-    Page<Owner> getAll(PageRequest pageRequest, OwnerRequestParams filter);
+    Page<Owner> getAll(@NotNull PageRequest pageRequest, @NotNull OwnerRequestParams filter);
 
     /**
      * Updates owner fields.
@@ -36,7 +39,7 @@ public interface OwnerService {
      * @param request fields to update.
      * @return updated entity.
      */
-    Owner update(Long id, @Valid OwnerUpdateRequest request);
+    Owner update(UUID id, @Valid @NotNull OwnerUpdateRequest request);
 
     /**
      * Gets owner by id
@@ -44,13 +47,13 @@ public interface OwnerService {
      * @param id unique owner id.
      * @return owner entity.
      */
-    Owner getById(Long id);
+    Owner getById(@NotNull UUID id);
 
     /**
      * Deletes owner by id.
      *
      * @param id unique owner id.
      */
-    void deleteById(Long id);
+    void deleteById(@NotNull UUID id);
 
 }

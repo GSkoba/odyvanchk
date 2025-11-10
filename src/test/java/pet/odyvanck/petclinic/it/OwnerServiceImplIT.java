@@ -29,6 +29,7 @@ import pet.odyvanck.petclinic.web.dto.owner.OwnerUpdateRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -116,7 +117,7 @@ class OwnerServiceImplIT {
     @Test
     @DisplayName("Getting all owners without filtering")
     void getAllWithoutFilters() {
-        OwnerRequestParams params = new OwnerRequestParams();
+        OwnerRequestParams params = new OwnerRequestParams(null, null, null);
         var page = ownerService.getAll(PageRequest.of(0, 10), params);
 
         assertThat(page.getTotalElements()).isEqualTo(count);
@@ -133,8 +134,7 @@ class OwnerServiceImplIT {
     void getAllWithEmailFilter() {
         var email = preloadedOwners.getLast().getUser().getEmail();
         var firstName = preloadedOwners.getLast().getUser().getFirstName();
-        OwnerRequestParams params = new OwnerRequestParams();
-        params.setEmail(email);
+        OwnerRequestParams params = new OwnerRequestParams(email, null, null);
 
         var page = ownerService.getAll(PageRequest.of(0, 10), params);
 
@@ -147,8 +147,7 @@ class OwnerServiceImplIT {
     void getAllWithPhoneFilter() {
         var phone = preloadedOwners.getLast().getPhone();
         var firstName = preloadedOwners.getLast().getUser().getFirstName();
-        OwnerRequestParams params = new OwnerRequestParams();
-        params.setPhone(phone);
+        OwnerRequestParams params = new OwnerRequestParams(null, phone, null);
 
         var page = ownerService.getAll(PageRequest.of(0, 10), params);
 
@@ -159,9 +158,8 @@ class OwnerServiceImplIT {
 
     @Test
     void getAllWithFirstNameFilter() {
-        OwnerRequestParams params = new OwnerRequestParams();
         var firstName = preloadedOwners.get(1).getUser().getFirstName();
-        params.setFirstName(firstName);
+        OwnerRequestParams params = new OwnerRequestParams(null, null, firstName);
 
         var page = ownerService.getAll(PageRequest.of(0, 10), params);
 
@@ -180,7 +178,7 @@ class OwnerServiceImplIT {
     @Test
     @DisplayName("Getting By Id throws exception when Owner not found")
     void getByIdThrowsWhenNotFound() {
-        var id = 9999L;
+        var id = UUID.randomUUID();
         assertThatThrownBy(() -> ownerService.getById(id))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Owner with id '"+ id + "' not found");
@@ -219,7 +217,7 @@ class OwnerServiceImplIT {
     @Test
     @DisplayName("Deletion by id should not throw when Owner does not exist")
     void deleteByIdNotThrowWhenNotExists() {
-        assertThatCode(() -> ownerService.deleteById(9999L))
+        assertThatCode(() -> ownerService.deleteById(UUID.randomUUID()))
                 .doesNotThrowAnyException();
     }
 }

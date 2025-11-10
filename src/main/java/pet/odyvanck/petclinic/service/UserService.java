@@ -1,5 +1,6 @@
 package pet.odyvanck.petclinic.service;
 
+import jakarta.validation.constraints.NotNull;
 import pet.odyvanck.petclinic.domain.User;
 
 public interface UserService {
@@ -10,5 +11,5 @@ public interface UserService {
      * @param password raw password.
      * @return created user.
      */
-    User register(User user, String password);
+    User register(@NotNull User user, @NotNull String password);
 }

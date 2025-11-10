@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.UUID;
 
 /**
  * Represents user who can have pets.
@@ -14,8 +15,8 @@ import java.time.ZoneOffset;
 @Data
 public class Owner {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @OneToOne
     @JoinColumn(name = "user_id", unique = true)

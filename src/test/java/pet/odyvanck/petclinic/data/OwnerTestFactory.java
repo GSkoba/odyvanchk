@@ -2,7 +2,6 @@ package pet.odyvanck.petclinic.data;
 
 
 import pet.odyvanck.petclinic.domain.Owner;
-import pet.odyvanck.petclinic.domain.User;
 import pet.odyvanck.petclinic.web.dto.owner.OwnerCreationRequest;
 import pet.odyvanck.petclinic.web.dto.owner.OwnerResponse;
 import pet.odyvanck.petclinic.web.dto.owner.OwnerUpdateRequest;
@@ -23,54 +22,44 @@ public final class OwnerTestFactory {
 
     public static OwnerCreationRequest createOwnerCreationRequest() {
         return new OwnerCreationRequest(
-                "John",
-                "Doe",
+                "firstName",
+                "lastName",
                 "StrongPass123",
                 "+1234567890",
-                "john@example.com",
+                "email@example.com",
                 "123 Main St"
         );
     }
 
-    public static OwnerCreationRequest createOwnerCreationRequest(String email) {
-        return new OwnerCreationRequest(
-                "Jane",
-                "Smith",
-                "StrongPass123",
-                "+1987654321",
-                email,
-                "456 Elm Street"
-        );
-    }
-
     public static Owner createOwner(UUID id, UUID userId) {
-        Owner owner = new Owner();
-        owner.setId(id);
-        owner.setUser(UserTestFactory.createUser(userId));
-        owner.setPhone("+1234567890");
-        owner.setAddress("123 Main St");
-        owner.setCreatedAt(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC));
-        owner.setUpdatedAt(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC).plusDays(2));
-        return owner;
+        return Owner.builder()
+                .id(id)
+                .user(UserTestFactory.createUser(userId))
+                .phone("+1234567890")
+                .address("address 123 Main St")
+                .createdAt(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC))
+                .updatedAt(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC).plusDays(2))
+                .build();
     }
 
     public static Owner createOwnerWithoutIdAndUser() {
-        Owner owner = new Owner();
-        owner.setPhone("+1234567890");
-        owner.setAddress("123 Main St");
-        owner.setCreatedAt(LocalDateTime.now().minusDays(1));
-        owner.setUpdatedAt(LocalDateTime.now());
-        return owner;
+        return Owner.builder()
+                .phone("+1234567890")
+                .address("address 123 Main St")
+                .createdAt(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC))
+                .updatedAt(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC).plusDays(2))
+                .build();
     }
 
     public static OwnerUpdateRequest createOwnerUpdateRequest() {
         return new OwnerUpdateRequest(
-             "updatedFirstName",
-             "updatedLastName",
-             "+9876533",
-             "updated address"
+                "updatedFirstName",
+                "updatedLastName",
+                "+9876533",
+                "updated address"
         );
     }
+
     public static OwnerResponse createUpdatedOwnerResponse(UUID id, UUID userId, OwnerUpdateRequest req) {
         return new OwnerResponse(
                 id,
@@ -78,7 +67,7 @@ public final class OwnerTestFactory {
                 req.firstName(),
                 req.lastName(),
                 req.phone(),
-                "john@example.com",
+                "email@example.com",
                 req.address(),
                 LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC).plusDays(2),
                 LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC)
@@ -89,11 +78,11 @@ public final class OwnerTestFactory {
         return new OwnerResponse(
                 id,
                 userId,
-                "John",
-                "Doe",
+                "firstName",
+                "lastName",
                 "+1234567890",
-                "john@example.com",
-                "123 Main St",
+                "email@example.com",
+                "address 123 Main St",
                 LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC).plusDays(2),
                 LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC)
         );
@@ -107,7 +96,7 @@ public final class OwnerTestFactory {
                     UserTestFactory.generateForLong(i + 1)
             );
             o.setPhone("+100000000" + i);
-            o.setAddress("Street " + i);
+            o.setAddress("address Street " + i);
             owners.add(o);
         }
         return owners;
@@ -118,42 +107,31 @@ public final class OwnerTestFactory {
         for (int i = 1; i <= count; i++) {
             Owner o = createOwnerForListWithoutIdAndUser(i);
             o.setPhone("+100000000" + i);
-            o.setAddress("Street " + i);
+            o.setAddress("address Street " + i);
             owners.add(o);
         }
         return owners;
     }
 
 
-
     private static Owner createOwnerForList(UUID i, UUID userId) {
-        Owner owner = new Owner();
-        owner.setId(i);
-        owner.setUser(createUserForList(userId));
-        owner.setPhone("+100000000" + i);
-        owner.setAddress("Street " + i);
-        owner.setCreatedAt(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC));
-        owner.setUpdatedAt(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC).plusDays(2));
-        return owner;
+        return Owner.builder()
+                .id(i)
+                .user(UserTestFactory.createUser(userId))
+                .phone("+100000000" + i)
+                .address("address Street " + i)
+                .createdAt(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC))
+                .updatedAt(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC).plusDays(2))
+                .build();
     }
 
     private static Owner createOwnerForListWithoutIdAndUser(long i) {
-        Owner owner = new Owner();
-        owner.setPhone("+100000000" + i);
-        owner.setAddress("Street " + i);
-        owner.setCreatedAt(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC));
-        owner.setUpdatedAt(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC).plusDays(2));
-        return owner;
-    }
-
-    private static User createUserForList(UUID i) {
-        User user = new User();
-        user.setId(i);
-        user.setEmail("owner" + i + "@example.com");
-        user.setFirstName("Owner" + i);
-        user.setLastName("Last" + i);
-        user.setPasswordHash("StrongPassHash");
-        return user;
+        return Owner.builder()
+                .phone("+100000000" + i)
+                .address("address Street " + i)
+                .createdAt(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC))
+                .updatedAt(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC).plusDays(2))
+                .build();
     }
 
     public static List<OwnerResponse> createOwnerResponseList(int count) {
@@ -162,11 +140,11 @@ public final class OwnerTestFactory {
             list.add(new OwnerResponse(
                     UserTestFactory.generateForLong(i),
                     UserTestFactory.generateForLong(i + 1),
-                    "Owner" + i,
-                    "Last" + i,
+                    "firstName" + i,
+                    "lastName" + i,
                     "+100000000" + i,
-                    "owner" + i + "@example.com",
-                    "Street " + i,
+                    "email" + i + "@example.com",
+                    "address Street " + i,
                     LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC),
                     LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC).plusDays(2)
             ));

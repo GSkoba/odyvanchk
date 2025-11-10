@@ -66,8 +66,8 @@ class OwnerControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", "/api/v1/owners/" + id))
-                .andExpect(jsonPath("$.firstName").value("John"))
-                .andExpect(jsonPath("$.email").value("john@example.com"));
+                .andExpect(jsonPath("$.firstName").value("firstName"))
+                .andExpect(jsonPath("$.email").value("email@example.com"));
 
         verify(ownerService).register(owner, owner.getUser(), "StrongPass123");
     }
@@ -76,7 +76,7 @@ class OwnerControllerTest {
     @DisplayName("POST /api/v1/owners → should fail validation for phone and email")
     void registerValidationError() throws Exception {
         var invalid = new OwnerCreationRequest(
-                "first", "last", "123", "bad_phone", "not-an-email", "address"
+                "firstName", "lastName", "password", "bad_phone", "not-an-email", "address"
         );
 
         mockMvc.perform(post(BASE_URI)
@@ -111,8 +111,8 @@ class OwnerControllerTest {
 
                 .andExpect(jsonPath("$.totalElements").value(2))
 
-                .andExpect(jsonPath("$.elements[0].firstName").value("Owner1"))
-                .andExpect(jsonPath("$.elements[1].email").value("owner2@example.com"));
+                .andExpect(jsonPath("$.elements[0].firstName").value("firstName1"))
+                .andExpect(jsonPath("$.elements[1].email").value("email2@example.com"));
     }
 
     @Test

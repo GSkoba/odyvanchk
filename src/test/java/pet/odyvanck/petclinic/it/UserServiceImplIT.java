@@ -79,10 +79,9 @@ class UserServiceImplIT {
     @Test
     @DisplayName("Registration with already existing email")
     void registerDuplicatesEmail() {
-        userService.register(user, "password");
+        User saved = userService.register(user, "password");
 
-        User duplicate = new User();
-        duplicate.setEmail(user.getEmail());
+        User duplicate = saved.toBuilder().build();
 
         assertThatThrownBy(() -> userService.register(duplicate, "anotherPass"))
                 .isInstanceOf(EntityAlreadyExistsException.class)

@@ -1,20 +1,24 @@
 package pet.odyvanck.petclinic.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.UUID;
 
 /**
- * Representes user as a person.
+ * Represents user as a person.
  */
 @Entity
 @Table(name = "users")
 @Data
+@Builder(toBuilder = true)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -34,17 +38,16 @@ public class User {
 
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(nullable = false)
-    private UserStatus status = UserStatus.ACTIVE;
+    private UserStatus status;
 
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now(ZoneOffset.UTC);
+    @EqualsAndHashCode.Exclude
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt = LocalDateTime.now(ZoneOffset.UTC);
-
-    @PreUpdate
-    public void setLastUpdate() {
-        this.updatedAt = LocalDateTime.now(ZoneOffset.UTC);
-    }
+    @EqualsAndHashCode.Exclude
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
 }

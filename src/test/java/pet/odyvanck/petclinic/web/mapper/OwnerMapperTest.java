@@ -20,56 +20,58 @@ class OwnerMapperTest {
     @Test
     void toOwner() {
         OwnerCreationRequest request = new OwnerCreationRequest(
-                "John",
-                "Doe",
+                "firstName",
+                "lastName",
                 "password123",
                 "+1234567890",
-                "john@example.com",
-                "123 Street"
+                "email@example.com",
+                "address 123 Street"
         );
 
         Owner owner = mapper.toOwner(request);
 
         assertThat(owner).isNotNull();
         assertThat(owner.getPhone()).isEqualTo("+1234567890");
-        assertThat(owner.getAddress()).isEqualTo("123 Street");
+        assertThat(owner.getAddress()).isEqualTo("address 123 Street");
     }
 
     @Test
     void toUser() {
         OwnerCreationRequest request = new OwnerCreationRequest(
-                "Jane",
-                "Smith",
+                "firstName",
+                "lastName",
                 "password123",
-                "+1987654321",
-                "jane@example.com",
-                "456 Avenue"
+                "+1234567890",
+                "email@example.com",
+                "address 123 Street"
         );
 
         User user = mapper.toUser(request);
 
         assertThat(user).isNotNull();
-        assertThat(user.getEmail()).isEqualTo("jane@example.com");
-        assertThat(user.getFirstName()).isEqualTo("Jane");
-        assertThat(user.getLastName()).isEqualTo("Smith");
+        assertThat(user.getEmail()).isEqualTo("email@example.com");
+        assertThat(user.getFirstName()).isEqualTo("firstName");
+        assertThat(user.getLastName()).isEqualTo("lastName");
     }
 
 
     @Test
     void toDto() {
-        User user = new User();
-        user.setId(UUID.randomUUID());
-        user.setFirstName("John");
-        user.setLastName("Doe");
-        user.setEmail("john@example.com");
+        User user = User.builder()
+                .id(UUID.randomUUID())
+                .firstName("firstName")
+                .lastName("lastName")
+                .email("email@example.com")
+                .build();
 
-        Owner owner = new Owner();
-        owner.setId(UUID.randomUUID());
-        owner.setUser(user);
-        owner.setPhone("+123456789");
-        owner.setAddress("123 Street");
-        owner.setCreatedAt(LocalDateTime.now());
-        owner.setUpdatedAt(LocalDateTime.now());
+        Owner owner = Owner.builder()
+                .id(UUID.randomUUID())
+                .user(user)
+                .phone("+123456789")
+                .address("address 123 Street")
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
 
         OwnerResponse dto = mapper.toDto(owner);
 
@@ -86,33 +88,38 @@ class OwnerMapperTest {
 
     @Test
     void toDtoList() {
-        User user1 = new User();
-        user1.setId(UUID.randomUUID());
-        user1.setFirstName("Alice");
-        user1.setLastName("Smith");
-        user1.setEmail("alice@example.com");
+        User user1 = User.builder()
+                .id(UUID.randomUUID())
+                .firstName("firstName1")
+                .lastName("lastName1")
+                .email("email1@example.com")
+                .build();
 
-        Owner owner1 = new Owner();
-        owner1.setId(UUID.randomUUID());
-        owner1.setUser(user1);
-        owner1.setPhone("+111111111");
-        owner1.setAddress("Street 1");
-        owner1.setCreatedAt(LocalDateTime.now());
-        owner1.setUpdatedAt(LocalDateTime.now());
+        Owner owner1 = Owner.builder()
+                .id(UUID.randomUUID())
+                .user(user1)
+                .phone("+111111111")
+                .address("address Street 1")
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
 
-        User user2 = new User();
-        user2.setId(UUID.randomUUID());
-        user2.setFirstName("Bob");
-        user2.setLastName("Johnson");
-        user2.setEmail("bob@example.com");
 
-        Owner owner2 = new Owner();
-        owner2.setId(UUID.randomUUID());
-        owner2.setUser(user2);
-        owner2.setPhone("+222222222");
-        owner2.setAddress("Street 2");
-        owner2.setCreatedAt(LocalDateTime.now());
-        owner2.setUpdatedAt(LocalDateTime.now());
+        User user2 = User.builder()
+                .id(UUID.randomUUID())
+                .firstName("firstName2")
+                .lastName("lastName2")
+                .email("email2@example.com")
+                .build();
+
+        Owner owner2 = Owner.builder()
+                .id(UUID.randomUUID())
+                .user(user2)
+                .phone("+222222222")
+                .address("address Street 2")
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
 
         List<Owner> owners = List.of(owner1, owner2);
 

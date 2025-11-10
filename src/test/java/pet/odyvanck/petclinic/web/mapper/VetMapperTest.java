@@ -11,6 +11,7 @@ import pet.odyvanck.petclinic.web.dto.vet.VetResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,28 +58,30 @@ class VetMapperTest {
     @Test
     @DisplayName("Map Vet entity to VetResponse successfully")
     void toDtoSuccessfully() {
-        User user = new User();
-        user.setId(42L);
-        user.setFirstName("Alice");
-        user.setLastName("Wonderland");
-        user.setEmail("alice@example.com");
+        User user = User.builder()
+                .id(UUID.randomUUID())
+                .firstName("firstName")
+                .lastName("lastName")
+                .email("email@example.com")
+                .build();
 
-        Vet vet = new Vet();
-        vet.setId(1L);
-        vet.setUser(user);
-        vet.setPhone("987654321");
-        vet.setCreatedAt(LocalDateTime.now().minusDays(2));
-        vet.setUpdatedAt(LocalDateTime.now());
+        Vet vet = Vet.builder()
+                .id(UUID.randomUUID())
+                .user(user)
+                .createdAt(LocalDateTime.now().minusDays(2))
+                .updatedAt(LocalDateTime.now())
+                .phone("+1234567890")
+                .build();
 
         VetResponse dto = vetMapper.toDto(vet);
 
         assertThat(dto).isNotNull();
         assertThat(dto.id()).isEqualTo(vet.getId());
         assertThat(dto.userId()).isEqualTo(user.getId());
-        assertThat(dto.firstName()).isEqualTo("Alice");
-        assertThat(dto.lastName()).isEqualTo("Wonderland");
-        assertThat(dto.email()).isEqualTo("alice@example.com");
-        assertThat(dto.phone()).isEqualTo("987654321");
+        assertThat(dto.firstName()).isEqualTo("firstName");
+        assertThat(dto.lastName()).isEqualTo("lastName");
+        assertThat(dto.email()).isEqualTo("email@example.com");
+        assertThat(dto.phone()).isEqualTo("+1234567890");
         assertThat(dto.createdAt()).isEqualTo(vet.getCreatedAt());
         assertThat(dto.updatedAt()).isEqualTo(vet.getUpdatedAt());
     }
@@ -86,18 +89,20 @@ class VetMapperTest {
     @Test
     @DisplayName("Map list of Vets to list of VetResponses successfully")
     void toDtoListSuccessfully() {
-        User user = new User();
-        user.setId(10L);
-        user.setFirstName("Bob");
-        user.setLastName("Builder");
-        user.setEmail("bob@build.com");
+        User user = User.builder()
+                .id(UUID.randomUUID())
+                .firstName("firstName")
+                .lastName("lastName")
+                .email("email@example.com")
+                .build();
 
-        Vet vet = new Vet();
-        vet.setId(5L);
-        vet.setUser(user);
-        vet.setPhone("123123123");
-        vet.setCreatedAt(LocalDateTime.now().minusDays(1));
-        vet.setUpdatedAt(LocalDateTime.now());
+        Vet vet = Vet.builder()
+                .id(UUID.randomUUID())
+                .user(user)
+                .createdAt(LocalDateTime.now().minusDays(2))
+                .updatedAt(LocalDateTime.now())
+                .phone("+1234567890")
+                .build();
 
         List<Vet> vets = List.of(vet);
 
@@ -106,8 +111,8 @@ class VetMapperTest {
         assertThat(result).hasSize(1);
         VetResponse dto = result.getFirst();
         assertThat(dto.userId()).isEqualTo(user.getId());
-        assertThat(dto.firstName()).isEqualTo("Bob");
-        assertThat(dto.lastName()).isEqualTo("Builder");
-        assertThat(dto.phone()).isEqualTo("123123123");
+        assertThat(dto.firstName()).isEqualTo("firstName");
+        assertThat(dto.lastName()).isEqualTo("lastName");
+        assertThat(dto.phone()).isEqualTo("+1234567890");
     }
 }

@@ -22,6 +22,7 @@ import pet.odyvanck.petclinic.web.dto.vet.*;
 import pet.odyvanck.petclinic.web.mapper.VetMapper;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
@@ -54,8 +55,8 @@ class VetControllerTest {
     @Test
     @DisplayName("POST /api/v1/vets → should create vet successfully")
     void createVetSuccessfully() throws Exception {
-        var vetId = 1L;
-        var userId = 2L;
+        var vetId = UUID.randomUUID();
+        var userId = UUID.randomUUID();
         var request = VetTestFactory.createVetCreationRequest();
         var vet = VetTestFactory.createVetWithoutIdAndUser();
         var user = UserTestFactory.createUserWithoutId();
@@ -71,11 +72,11 @@ class VetControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "/api/v1/vets/1"))
+                .andExpect(header().string("Location", "/api/v1/vets/" + vetId))
                 .andExpect(jsonPath("$.firstName").value(response.firstName()))
                 .andExpect(jsonPath("$.lastName").value(response.lastName()))
                 .andExpect(jsonPath("$.phone").value(response.phone()))
-                .andExpect(jsonPath("$.userId").value(response.userId()))
+                .andExpect(jsonPath("$.userId").value(response.userId().toString()))
                 .andExpect(jsonPath("$.email").value(response.email()));
 
         verify(vetService).create(vet, user, request.password());
@@ -140,9 +141,11 @@ class VetControllerTest {
     @Test
     @DisplayName("GET /api/v1/vets/{id} → should return vet by ID")
     void getVetByIdSuccessfully() throws Exception {
-        final Long id = 1L;
-        var vet = VetTestFactory.createVet(id, 2L);
-        var response = VetTestFactory.createVetResponse(id, 2L);
+        final UUID id = UUID.randomUUID();
+        final UUID userId = UUID.randomUUID();
+
+        var vet = VetTestFactory.createVet(id, userId);
+        var response = VetTestFactory.createVetResponse(id, userId);
 
         given(vetService.getById(id)).willReturn(vet);
         given(vetMapper.toDto(vet)).willReturn(response);
@@ -157,8 +160,8 @@ class VetControllerTest {
     @Test
     @DisplayName("PUT /api/v1/vets/{id} → should update and return updated vet")
     void updateVetSuccessfully() throws Exception {
-        final Long id = 1L;
-        final Long userId = 2L;
+        final UUID id = UUID.randomUUID();
+        final UUID userId = UUID.randomUUID();
         var request = VetTestFactory.createVetUpdateRequest();
         var vet = VetTestFactory.createVet(id, userId);
         var response = VetTestFactory.createUpdatedVetResponse(id, userId, request);
@@ -179,7 +182,7 @@ class VetControllerTest {
     @Test
     @DisplayName("DELETE /api/v1/vets/{id} → should delete vet and return 204")
     void deleteVetSuccessfully() throws Exception {
-        final Long id = 1L;
+        final UUID id = UUID.randomUUID();
         doNothing().when(vetService).delete(id);
 
         mockMvc.perform(delete(BASE_URI + "/" + id))

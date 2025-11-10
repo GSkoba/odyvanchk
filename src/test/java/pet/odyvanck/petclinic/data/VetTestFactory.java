@@ -8,34 +8,38 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static pet.odyvanck.petclinic.data.UserTestFactory.createUser;
 
 public class VetTestFactory {
 
-    public static Vet createVet(Long id, Long userId) {
+    public static Vet createVet(UUID id, UUID userId) {
         User user = createUser(userId);
-        Vet vet = new Vet();
-        vet.setId(id);
-        vet.setUser(user);
-        vet.setPhone("+555000" + id);
-        vet.setCreatedAt(LocalDateTime.now(ZoneOffset.UTC).minusDays(1));
-        vet.setUpdatedAt(LocalDateTime.now(ZoneOffset.UTC));
-        return vet;
+        return Vet.builder()
+                .id(id)
+                .user(user)
+                .createdAt(LocalDateTime.now().minusDays(2))
+                .updatedAt(LocalDateTime.now())
+                .phone("+1234567890")
+                .build();
     }
 
     public static Vet createVetWithoutIdAndUser() {
-        Vet vet = new Vet();
-        vet.setPhone("+555000");
-        vet.setCreatedAt(LocalDateTime.now().minusDays(1));
-        vet.setUpdatedAt(LocalDateTime.now());
-        return vet;
+        return Vet.builder()
+                .createdAt(LocalDateTime.now().minusDays(2))
+                .updatedAt(LocalDateTime.now())
+                .phone("+1234567890")
+                .build();
     }
 
     public static List<Vet> createVetList(int count) {
         List<Vet> vets = new ArrayList<>();
         for (long i = 1; i <= count; i++) {
-            vets.add(createVet(i, i + 100));
+            vets.add(createVet(
+                    UserTestFactory.generateForLong(i),
+                    UserTestFactory.generateForLong(i + 100)
+            ));
         }
         return vets;
     }
@@ -51,11 +55,11 @@ public class VetTestFactory {
 
     public static VetCreationRequest createVetCreationRequest() {
         return new VetCreationRequest(
-                "John",
-                "Doe",
+                "firstName",
+                "lastName",
                 "StrongPass123",
                 "+1234567890",
-                "john@example.com"
+                "email@example.com"
         );
     }
 
@@ -67,27 +71,27 @@ public class VetTestFactory {
         );
     }
 
-    public static VetResponse createVetResponse(Long vetId, Long userId) {
+    public static VetResponse createVetResponse(UUID vetId, UUID userId) {
         return new VetResponse(
                 vetId,
                 userId,
-                "John",
-                "Doe",
+                "firstName",
+                "lastName",
                 "+1234567890",
-                "john@example.com",
+                "email@example.com",
                 LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC).plusDays(2),
                 LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC)
         );
     }
 
-    public static VetResponse createUpdatedVetResponse(Long id, Long userId, VetUpdateRequest req) {
+    public static VetResponse createUpdatedVetResponse(UUID id, UUID userId, VetUpdateRequest req) {
         return new VetResponse(
                 id,
                 userId,
                 req.firstName(),
                 req.lastName(),
                 req.phone(),
-                "john@example.com",
+                "email@example.com",
                 LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC).plusDays(2),
                 LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC)
         );
@@ -96,7 +100,10 @@ public class VetTestFactory {
     public static List<VetResponse> createVetResponseList(int count) {
         List<VetResponse> responses = new ArrayList<>();
         for (long i = 1; i <= count; i++) {
-            responses.add(createVetResponse(i, i + 100));
+            responses.add(createVetResponse(
+                    UserTestFactory.generateForLong(i),
+                    UserTestFactory.generateForLong(i + 100)
+            ));
         }
         return responses;
     }

@@ -13,6 +13,7 @@ import pet.odyvanck.petclinic.web.dto.vet.VetUpdateRequest;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class VetServiceImpl implements VetService {
 
     @Transactional
     @Override
-    public Vet update(Long id, VetUpdateRequest request) {
+    public Vet update(UUID id, VetUpdateRequest request) {
         Vet vet = getById(id);
         vet.getUser().setFirstName(request.firstName());
         vet.getUser().setLastName(request.lastName());
@@ -43,7 +44,7 @@ public class VetServiceImpl implements VetService {
 
     @Transactional(readOnly = true)
     @Override
-    public Vet getById(Long id) {
+    public Vet getById(UUID id) {
         return vetRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Vet", "id", id.toString()));
     }
@@ -56,7 +57,7 @@ public class VetServiceImpl implements VetService {
 
     @Transactional
     @Override
-    public void delete(Long id) {
+    public void delete(UUID id) {
         if (vetRepository.existsById(id)) {
             vetRepository.deleteById(id);
         }

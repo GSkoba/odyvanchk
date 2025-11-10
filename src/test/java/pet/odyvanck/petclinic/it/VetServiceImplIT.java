@@ -28,6 +28,7 @@ import pet.odyvanck.petclinic.web.dto.vet.VetUpdateRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -107,8 +108,9 @@ class VetServiceImplIT {
     @Test
     @DisplayName("Fail for non-existent vet")
     void updateThrowsEntityNotFoundException() {
+        final UUID id = UUID.randomUUID();
         VetUpdateRequest req = new VetUpdateRequest("Jane", "Smith", "987654321");
-        assertThatThrownBy(() -> vetService.update(999L, req))
+        assertThatThrownBy(() -> vetService.update(id, req))
                 .isInstanceOf(EntityNotFoundException.class);
     }
 
@@ -126,7 +128,8 @@ class VetServiceImplIT {
     @Test
     @DisplayName("Fail when vet not found")
     void getByIdThrowsEntityNotFoundException() {
-        assertThatThrownBy(() -> vetService.getById(999L))
+        final UUID id = UUID.randomUUID();
+        assertThatThrownBy(() -> vetService.getById(id))
                 .isInstanceOf(EntityNotFoundException.class);
     }
 

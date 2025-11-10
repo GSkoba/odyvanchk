@@ -18,6 +18,7 @@ import pet.odyvanck.petclinic.domain.error.EntityNotFoundException;
 import pet.odyvanck.petclinic.web.dto.vet.VetUpdateRequest;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -39,8 +40,8 @@ class VetServiceImplTest {
     @DisplayName("Creation of vet successfully when user is registered and vet is saved")
     void createSuccessfully() {
         String password = "securePass123";
-        var userId = 2L;
-        var vetId = 1L;
+        final UUID vetId = UUID.randomUUID();
+        final UUID userId = UUID.randomUUID();
         Vet vet = VetTestFactory.createVetWithoutIdAndUser();
         User user = UserTestFactory.createUserWithoutId();
         User createdUser = UserTestFactory.createUser(userId);
@@ -60,8 +61,8 @@ class VetServiceImplTest {
     @Test
     @DisplayName("Update vet fields and save successfully")
     void updateSuccessfully() {
-        var id = 1L;
-        var userId = 2L;
+        final UUID id = UUID.randomUUID();
+        final UUID userId = UUID.randomUUID();
         VetUpdateRequest request = VetTestFactory.createVetUpdateRequest();
         Vet vet = VetTestFactory.createVet(id, userId);
 
@@ -83,7 +84,7 @@ class VetServiceImplTest {
     @Test
     @DisplayName("Throws EntityNotFoundException when updating non-existing vet")
     void updateThrowsEntityNotFoundException() {
-        Long id = 999L;
+        UUID id = UUID.randomUUID();
         VetUpdateRequest request = VetTestFactory.createVetUpdateRequest();
         when(vetRepository.findById(id)).thenReturn(Optional.empty());
 
@@ -94,8 +95,8 @@ class VetServiceImplTest {
     @Test
     @DisplayName("Vet by ID successfully")
     void getByIdSuccessfully() {
-        var vetId = 1L;
-        var userId = 2L;
+        final UUID vetId = UUID.randomUUID();
+        final UUID userId = UUID.randomUUID();
         Vet vet = VetTestFactory.createVet(vetId, userId);
         when(vetRepository.findById(vetId)).thenReturn(Optional.of(vet));
 
@@ -108,7 +109,7 @@ class VetServiceImplTest {
     @Test
     @DisplayName("Throws EntityNotFoundException when vet not found by ID")
     void getByIdThrowsEntityNotFoundException() {
-        var vetId = 1L;
+        var vetId = UUID.randomUUID();
         when(vetRepository.findById(vetId)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> vetService.getById(vetId));
@@ -126,24 +127,24 @@ class VetServiceImplTest {
         Page<Vet> result = vetService.getAll(pageRequest);
 
         assertEquals(3, result.getTotalElements());
-        assertEquals("john101@example.com", result.getContent().get(0).getUser().getEmail());
-        assertEquals("john102@example.com", result.getContent().get(1).getUser().getEmail());
-        assertEquals("john103@example.com", result.getContent().get(2).getUser().getEmail());
+        assertEquals("email" + vets.get(0).getUser().getId() + "@example.com", result.getContent().get(0).getUser().getEmail());
+        assertEquals("email" + vets.get(1).getUser().getId() + "@example.com", result.getContent().get(1).getUser().getEmail());
+        assertEquals("email" + vets.get(2).getUser().getId() + "@example.com", result.getContent().get(2).getUser().getEmail());
 
-        assertEquals("John101", result.getContent().get(0).getUser().getFirstName());
-        assertEquals("John102", result.getContent().get(1).getUser().getFirstName());
-        assertEquals("John103", result.getContent().get(2).getUser().getFirstName());
+        assertEquals("firstName" + vets.get(0).getUser().getId(),  result.getContent().get(0).getUser().getFirstName());
+        assertEquals("firstName" + vets.get(1).getUser().getId(), result.getContent().get(1).getUser().getFirstName());
+        assertEquals("firstName" + vets.get(2).getUser().getId(), result.getContent().get(2).getUser().getFirstName());
 
-        assertEquals(1L, result.getContent().get(0).getId());
-        assertEquals(2L, result.getContent().get(1).getId());
-        assertEquals(3L, result.getContent().get(2).getId());
+        assertEquals(vets.get(0).getId(), result.getContent().get(0).getId());
+        assertEquals(vets.get(1).getId(), result.getContent().get(1).getId());
+        assertEquals(vets.get(2).getId(), result.getContent().get(2).getId());
 
         verify(vetRepository).findAll(pageRequest);
     }
 
     @DisplayName("Deletion by id")
     void deleteByIdSuccessfully() {
-        var id = 1L;
+        var id = UUID.randomUUID();
         when(vetRepository.existsById(id)).thenReturn(true);
 
         vetRepository.deleteById(id);
@@ -154,11 +155,11 @@ class VetServiceImplTest {
     @Test
     @DisplayName("Deletion when owner does not exist")
     void deleteByIdDoesNotExist() {
-        var id = 1L;
+        var id = UUID.randomUUID();
         when(vetRepository.existsById(id)).thenReturn(false);
 
         vetService.delete(id);
 
-        verify(vetRepository, never()).deleteById(anyLong());
+        verify(vetRepository, never()).deleteById(any(UUID.class));
     }
 }

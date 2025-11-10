@@ -15,6 +15,7 @@ import pet.odyvanck.petclinic.web.dto.vet.*;
 import pet.odyvanck.petclinic.web.mapper.VetMapper;
 
 import java.net.URI;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/vets")
@@ -35,7 +36,7 @@ public class VetController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VetResponse> getById(@PathVariable Long id) {
+    public ResponseEntity<VetResponse> getById(@PathVariable UUID id) {
         Vet vet = vetService.getById(id);
         return ResponseEntity.ok(vetMapper.toDto(vet));
     }
@@ -52,7 +53,7 @@ public class VetController {
 
     @PutMapping("/{id}")
     public ResponseEntity<VetResponse> update(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @Valid @RequestBody VetUpdateRequest request
     ) {
         Vet updated = vetService.update(id, request);
@@ -60,7 +61,7 @@ public class VetController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         vetService.delete(id);
         return ResponseEntity.noContent().build();
     }

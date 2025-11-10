@@ -1,10 +1,11 @@
 package pet.odyvanck.petclinic.web.dto.vet;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record VetResponse(
-        Long id,
-        Long userId,
+        UUID id,
+        UUID userId,
         String firstName,
         String lastName,
         String email,

@@ -30,7 +30,7 @@ CREATE TYPE user_status AS ENUM ('active', 'inactive', 'banned');
 -- Table: users
 -- =====================================================
 CREATE TABLE users (
-    id BIGSERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE users (
 -- Table: user_roles (Many-to-Many)
 -- =====================================================
 CREATE TABLE user_roles (
-    user_id BIGINT NOT NULL,
+    user_id UUID NOT NULL,
     role_id INT NOT NULL,
     assigned_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, role_id),
@@ -58,8 +58,8 @@ CREATE TABLE user_roles (
 -- Table: owners
 -- =====================================================
 CREATE TABLE owners (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT UNIQUE,
+    id UUID PRIMARY KEY,
+    user_id UUID UNIQUE,
     phone VARCHAR(20) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     address VARCHAR(500),
@@ -84,8 +84,8 @@ CREATE TABLE specialties (
 -- Table: vets
 -- =====================================================
 CREATE TABLE vets (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT UNIQUE,
+    id UUID PRIMARY KEY,
+    user_id UUID UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
     phone VARCHAR(20),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -98,7 +98,7 @@ CREATE TABLE vets (
 -- Table: vet_specialties (Many-to-Many)
 -- =====================================================
 CREATE TABLE vet_specialties (
-    vet_id BIGINT NOT NULL,
+    vet_id UUID NOT NULL,
     specialty_id INT NOT NULL,
     PRIMARY KEY (vet_id, specialty_id),
     CONSTRAINT fk_vet_specialties_vet FOREIGN KEY (vet_id)
@@ -111,8 +111,8 @@ CREATE TABLE vet_specialties (
 -- Table: vet_slots
 -- =====================================================
 CREATE TABLE vet_slots (
-    id BIGSERIAL PRIMARY KEY,
-    vet_id BIGINT NOT NULL,
+    id UUID PRIMARY KEY,
+    vet_id UUID NOT NULL,
     start_time TIMESTAMP NOT NULL,
     end_time TIMESTAMP NOT NULL,
     is_available BOOLEAN NOT NULL DEFAULT true,
@@ -129,11 +129,11 @@ CREATE TABLE vet_slots (
 -- Table: pets
 -- =====================================================
 CREATE TABLE pets (
-    id BIGSERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     birth_date DATE NOT NULL CHECK (birth_date <= CURRENT_DATE),
     type VARCHAR(50) NOT NULL CHECK (type IN ('DOG', 'CAT', 'BIRD', 'HAMSTER', 'RABBIT', 'REPTILE', 'OTHER')),
-    owner_id BIGINT NOT NULL,
+    owner_id UUID NOT NULL,
     breed VARCHAR(100),
     color VARCHAR(50),
     weight DECIMAL(5,2) CHECK (weight > 0),
@@ -147,10 +147,10 @@ CREATE TABLE pets (
 -- Table: visits
 -- =====================================================
 CREATE TABLE visits (
-    id BIGSERIAL PRIMARY KEY,
-    pet_id BIGINT NOT NULL,
-    vet_id BIGINT NOT NULL,
-    slot_id BIGINT NOT NULL,
+    id UUID PRIMARY KEY,
+    pet_id UUID NOT NULL,
+    vet_id UUID NOT NULL,
+    slot_id UUID NOT NULL,
     scheduled_date_time TIMESTAMP NOT NULL,
     status VARCHAR(50) NOT NULL CHECK (status IN ('SCHEDULED', 'COMPLETED', 'CANCELLED')),
     description TEXT,

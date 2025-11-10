@@ -1,0 +1,5 @@
+ALTER TABLE owners
+DROP COLUMN email;
+
+ALTER TABLE owners
+DROP COLUMN city;

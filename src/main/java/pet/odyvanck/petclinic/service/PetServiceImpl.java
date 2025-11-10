@@ -16,6 +16,7 @@ import pet.odyvanck.petclinic.service.specification.PetSpecification;
 import pet.odyvanck.petclinic.web.dto.pet.PetRequestParams;
 import pet.odyvanck.petclinic.web.dto.pet.PetUpdateRequest;
 
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -29,6 +30,8 @@ public class PetServiceImpl implements PetService {
     @Transactional
     @Override
     public Pet create(@NotNull Pet pet) {
+        Objects.requireNonNull(pet, "pet must be not null");
+
         Owner owner = ownerRepository.findById(pet.getOwner().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Owner", "id", pet.getOwner().getId().toString()));
 
@@ -39,6 +42,9 @@ public class PetServiceImpl implements PetService {
     @Transactional
     @Override
     public Pet update(UUID id, PetUpdateRequest request) {
+        Objects.requireNonNull(id, "pet id must be not null");
+        Objects.requireNonNull(request, "request must be not null");
+
         Pet pet = getById(id);
         pet.setName(request.name());
         pet.setColor(request.color());
@@ -52,6 +58,8 @@ public class PetServiceImpl implements PetService {
     @Transactional(readOnly = true)
     @Override
     public Pet getById(UUID id) {
+        Objects.requireNonNull(id, "pet id must be not null");
+
         return petRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Pet", "id", id.toString()));
     }
@@ -67,6 +75,8 @@ public class PetServiceImpl implements PetService {
     @Transactional
     @Override
     public void deleteById(UUID id) {
+        Objects.requireNonNull(id, "pet id must be not null");
+
         if (petRepository.existsById(id)) {
             petRepository.deleteById(id);
         }

@@ -13,6 +13,7 @@ import pet.odyvanck.petclinic.web.dto.vet.VetUpdateRequest;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -25,6 +26,10 @@ public class VetServiceImpl implements VetService {
     @Transactional
     @Override
     public Vet create(Vet vet, User user, String password) {
+        Objects.requireNonNull(vet, "vet must be not null");
+        Objects.requireNonNull(user, "user must be not null");
+        Objects.requireNonNull(password, "password must be not null");
+
         User createdUser = userService.register(user, password);
         vet.setUser(createdUser);
         return vetRepository.save(vet);
@@ -33,6 +38,9 @@ public class VetServiceImpl implements VetService {
     @Transactional
     @Override
     public Vet update(UUID id, VetUpdateRequest request) {
+        Objects.requireNonNull(id, "vet id must be not null");
+        Objects.requireNonNull(request, "request must be not null");
+
         Vet vet = getById(id);
         vet.getUser().setFirstName(request.firstName());
         vet.getUser().setLastName(request.lastName());
@@ -45,6 +53,8 @@ public class VetServiceImpl implements VetService {
     @Transactional(readOnly = true)
     @Override
     public Vet getById(UUID id) {
+        Objects.requireNonNull(id, "vet id must be not null");
+
         return vetRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Vet", "id", id.toString()));
     }
@@ -58,6 +68,8 @@ public class VetServiceImpl implements VetService {
     @Transactional
     @Override
     public void delete(UUID id) {
+        Objects.requireNonNull(id, "vet id must be not null");
+
         if (vetRepository.existsById(id)) {
             vetRepository.deleteById(id);
         }

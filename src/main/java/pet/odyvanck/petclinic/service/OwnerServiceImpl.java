@@ -16,6 +16,7 @@ import pet.odyvanck.petclinic.web.dto.owner.OwnerUpdateRequest;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -28,6 +29,8 @@ public class OwnerServiceImpl implements OwnerService {
     @Transactional
     @Override
     public Owner register(Owner owner, User user, String password) {
+        Objects.requireNonNull(owner, "owner must be not null");
+
         var savedUser = userService.register(user, password);
         owner.setUser(savedUser);
         return ownerRepository.save(owner);
@@ -36,20 +39,24 @@ public class OwnerServiceImpl implements OwnerService {
     @Transactional(readOnly = true)
     @Override
     public Page<Owner> getAll(PageRequest pageRequest, OwnerRequestParams filter) {
-        var spec = Specification.<Owner>unrestricted().and(OwnerSpecification.hasEmail(filter.getEmail()))
-                .and(OwnerSpecification.hasPhone(filter.getPhone()))
-                .and(OwnerSpecification.hasFirstName(filter.getFirstName()));
+        var spec = Specification.<Owner>unrestricted().and(OwnerSpecification.hasEmail(filter.email()))
+                .and(OwnerSpecification.hasPhone(filter.phone()))
+                .and(OwnerSpecification.hasFirstName(filter.firstName()));
         return ownerRepository.findAll(spec, pageRequest);
     }
 
     @Transactional(readOnly = true)
     public Owner getById(UUID id) {
+        Objects.requireNonNull(id, "owner id must be not null");
         return ownerRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Owner", "id", id.toString()));
     }
 
     @Transactional
     public Owner update(UUID id, OwnerUpdateRequest fieldsToUpdate) {
+        Objects.requireNonNull(fieldsToUpdate, "fields to update must be not null");
+        Objects.requireNonNull(id, "owner id must be not null");
+
         Owner owner = getById(id);
         owner.setPhone(fieldsToUpdate.phone());
         owner.setAddress(fieldsToUpdate.address());
@@ -61,6 +68,8 @@ public class OwnerServiceImpl implements OwnerService {
 
     @Transactional
     public void deleteById(UUID id) {
+        Objects.requireNonNull(id, "owner id must be not null");
+
         if (ownerRepository.existsById(id)) {
             ownerRepository.deleteById(id);
         }

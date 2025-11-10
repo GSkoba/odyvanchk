@@ -9,6 +9,8 @@ import pet.odyvanck.petclinic.domain.error.EntityAlreadyExistsException;
 import pet.odyvanck.petclinic.domain.User;
 import pet.odyvanck.petclinic.domain.UserStatus;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -19,6 +21,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User register(User user, String password) {
+        Objects.requireNonNull(user, "user must be not null");
+        Objects.requireNonNull(password, "password must be not null");
+
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new EntityAlreadyExistsException("User", "email", user.getEmail());
         }

@@ -16,6 +16,7 @@ import pet.odyvanck.petclinic.web.dto.pet.*;
 import pet.odyvanck.petclinic.web.mapper.PetMapper;
 
 import java.net.URI;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/pets")
@@ -35,12 +36,12 @@ public class PetController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PetResponse> update(@PathVariable Long id, @Validated @RequestBody PetUpdateRequest request) {
+    public ResponseEntity<PetResponse> update(@PathVariable UUID id, @Validated @RequestBody PetUpdateRequest request) {
         return ResponseEntity.ok(petMapper.toDto(petService.update(id, request)));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PetResponse> getById(@PathVariable Long id) {
+    public ResponseEntity<PetResponse> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(petMapper.toDto(petService.getById(id)));
     }
 
@@ -59,7 +60,7 @@ public class PetController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable UUID id) {
         petService.deleteById(id);
     }
 }

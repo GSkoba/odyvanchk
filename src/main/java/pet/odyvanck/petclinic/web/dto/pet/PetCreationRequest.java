@@ -5,6 +5,7 @@ import pet.odyvanck.petclinic.domain.PetType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 public record PetCreationRequest(
         @NotBlank
@@ -14,7 +15,7 @@ public record PetCreationRequest(
         @NotNull
         PetType type,
         @NotNull
-        Long ownerId,
+        UUID ownerId,
         String breed,
         String color,
         @DecimalMin(value = "0.1")

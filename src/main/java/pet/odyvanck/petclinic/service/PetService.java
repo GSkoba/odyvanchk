@@ -1,20 +1,23 @@
 package pet.odyvanck.petclinic.service;
 
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import pet.odyvanck.petclinic.domain.Pet;
 import pet.odyvanck.petclinic.web.dto.pet.PetRequestParams;
 import pet.odyvanck.petclinic.web.dto.pet.PetUpdateRequest;
 
+import java.util.UUID;
+
 public interface PetService {
-    Pet create(Pet pet);
+    Pet create(@NotNull Pet pet);
 
-    Pet update(Long id, PetUpdateRequest request);
+    Pet update(@NotNull UUID id, @NotNull PetUpdateRequest request);
 
-    Pet getById(Long id);
+    Pet getById(@NotNull UUID id);
 
-    Page<Pet> getAll(PageRequest pageRequest, PetRequestParams filterFields);
+    Page<Pet> getAll(@NotNull PageRequest pageRequest, @NotNull PetRequestParams filterFields);
 
-    void deleteById(Long id);
+    void deleteById(@NotNull UUID id);
 }
 

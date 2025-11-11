@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/db.changelog-002-fix-owner.sql
   - include:
       file: db/changelog/db.changelog-003-fix-user-status.sql
+  - include:
+      file: db/changelog/db.changelog-004-fix-vet.sql

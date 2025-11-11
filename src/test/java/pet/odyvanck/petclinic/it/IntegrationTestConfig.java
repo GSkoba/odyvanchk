@@ -8,9 +8,11 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 import pet.odyvanck.petclinic.dao.OwnerRepository;
 import pet.odyvanck.petclinic.dao.UserRepository;
+import pet.odyvanck.petclinic.dao.VetRepository;
 import pet.odyvanck.petclinic.service.OwnerServiceImpl;
 import pet.odyvanck.petclinic.service.UserService;
 import pet.odyvanck.petclinic.service.UserServiceImpl;
+import pet.odyvanck.petclinic.service.VetServiceImpl;
 
 @TestConfiguration
 public class IntegrationTestConfig {
@@ -27,6 +29,11 @@ public class IntegrationTestConfig {
     @Bean
     OwnerServiceImpl ownerService(UserService userService, OwnerRepository ownerRepository) {
         return new OwnerServiceImpl(userService, ownerRepository);
+    }
+
+    @Bean
+    VetServiceImpl vetService(UserService userService, VetRepository vetRepository) {
+        return new VetServiceImpl(userService, vetRepository);
     }
 
     public static PostgreSQLContainer<?> postgreSQLContainer() {

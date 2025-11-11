@@ -53,4 +53,11 @@ public class PaginationAndSortingRequestParams {
         return PageRequest.of(getPage(), getSize());
     }
 
+    public PageRequest buildPageRequest() {
+        if (getSortBy() != null && getSortBy().length > 0) {
+            return PageRequest.of(getPage(), getSize(), Sort.by(getDirection(), getSortBy()));
+        }
+        return PageRequest.of(getPage(), getSize());
+    }
+
 }

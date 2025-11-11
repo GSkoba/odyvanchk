@@ -5,9 +5,11 @@ import org.springframework.data.jpa.domain.Specification;
 import pet.odyvanck.petclinic.domain.Pet;
 import pet.odyvanck.petclinic.domain.PetType;
 
+import java.util.UUID;
+
 public class PetSpecification {
 
-    public static Specification<Pet> hasOwner(@Nullable String ownerId) {
+    public static Specification<Pet> hasOwner(@Nullable UUID ownerId) {
         return (root, query, cb) ->
                 ownerId == null ? null : cb.equal(root.get("owner").get("id"), ownerId);
     }

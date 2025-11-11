@@ -25,16 +25,14 @@ import java.util.UUID;
 public class PetServiceImpl implements PetService {
 
     private final PetRepository petRepository;
-    private final OwnerRepository ownerRepository;
+    private final OwnerService ownerService;
 
     @Transactional
     @Override
     public Pet create(@NotNull Pet pet) {
         Objects.requireNonNull(pet, "pet must be not null");
 
-        Owner owner = ownerRepository.findById(pet.getOwner().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Owner", "id", pet.getOwner().getId().toString()));
-
+        Owner owner = ownerService.getById(pet.getOwner().getId());
         pet.setOwner(owner);
         return petRepository.save(pet);
     }

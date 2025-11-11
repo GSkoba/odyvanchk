@@ -2,8 +2,10 @@ package pet.odyvanck.petclinic.web.dto.pet;
 
 import pet.odyvanck.petclinic.domain.PetType;
 
+import java.util.UUID;
+
 public record PetRequestParams(
-        String ownerId,
+        UUID ownerId,
         PetType type
 ) {
 }

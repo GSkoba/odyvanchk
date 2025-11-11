@@ -95,13 +95,13 @@ class VetServiceImplIT {
     @Test
     @DisplayName("Update existing vet data")
     void updateSuccessfully() {
-        VetUpdateRequest req = new VetUpdateRequest("Jane", "Smith", "987654321");
+        VetUpdateRequest req = new VetUpdateRequest("newFirstName", "newLastName", "+987654321");
 
         Vet updated = vetService.update(preloadedVets.getFirst().getId(), req);
 
-        assertThat(updated.getUser().getFirstName()).isEqualTo("Jane");
-        assertThat(updated.getUser().getLastName()).isEqualTo("Smith");
-        assertThat(updated.getPhone()).isEqualTo("987654321");
+        assertThat(updated.getUser().getFirstName()).isEqualTo("newFirstName");
+        assertThat(updated.getUser().getLastName()).isEqualTo("newLastName");
+        assertThat(updated.getPhone()).isEqualTo("+987654321");
         assertThat(updated.getUpdatedAt()).isNotNull();
     }
 

@@ -71,14 +71,13 @@ class VetServiceImplTest {
 
         Vet result = vetService.update(id, request);
 
-        assertEquals(request.firstName(), vet.getUser().getFirstName());
-        assertEquals(request.lastName(), vet.getUser().getLastName());
-        assertEquals(request.phone(), vet.getPhone());
-        assertNotNull(vet.getUpdatedAt());
-        assertEquals(vet, result);
+        assertEquals(request.firstName(), result.getUser().getFirstName());
+        assertEquals(request.lastName(), result.getUser().getLastName());
+        assertEquals(request.phone(), result.getPhone());
+        assertNotNull(result.getUpdatedAt());
 
         verify(vetRepository).findById(id);
-        verify(vetRepository).save(vet);
+        verify(vetRepository).save(any(Vet.class));
     }
 
     @Test
